@@ -13,7 +13,7 @@ export default function AdminPage(){
                     <img src="/logo.png" className="h-full"/>
                     <h1 className="text-2xl">Admin</h1>
                 </div>
-                <div className="w-full h-[400px] items-center p-10 text-white text-xl flex flex-col">
+                <div className="w-full h-[400px] items-center p-2.5 text-white text-2xl flex flex-col">
 
                     <Link to="/admin" className="w-full flex items-center h-[50px] gap-[10px]"> <LuClipboardList />Orders</Link>
                     <Link to="/admin/products" className="w-full flex items-center h-[50px] gap-[10px]"> <LuBoxes />Products</Link>

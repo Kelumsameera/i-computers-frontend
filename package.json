@@ -12,11 +12,16 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.13",
     "axios": "^1.12.2",
+<<<<<<< HEAD
     "clsx": "^2.1.1",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "lucide-react": "^0.546.0",
     "qrcode.react": "^4.2.0",
+=======
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+>>>>>>> 9c5f4db6afe0328cc1b7a3becda99e32a3799640
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-hot-toast": "^2.6.0",

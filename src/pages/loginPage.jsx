@@ -22,9 +22,12 @@ function LoginPage() {
       );
 
       console.log(res.data);
+<<<<<<< HEAD
 
       localStorage.setItem("token", res.data.token);
 
+=======
+>>>>>>> 9c5f4db6afe0328cc1b7a3becda99e32a3799640
       const data = res.data;
       if (res.data.role == "admin") {
         // window.location.href = "/admin";

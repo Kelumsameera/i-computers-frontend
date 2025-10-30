@@ -3,7 +3,11 @@
 @theme {
   --color-primary: #F7FAFF;
   --color-secondary: #111827;
+<<<<<<< HEAD
   --color-accent: #050807;
+=======
+  --color-accent: #282f2b;
+>>>>>>> 9c5f4db6afe0328cc1b7a3becda99e32a3799640
   --color-gold: #e29816;
 }
 
