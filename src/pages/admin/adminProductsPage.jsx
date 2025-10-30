@@ -22,7 +22,7 @@ export default function AdminProductsPage() {
   return (
     <div
       className="w-full min-h-screen flex flex-col items-center justify-start p-4 sm:p-6 md:p-10 
-      bg-gradient-to-b from-primary to-white text-secondary relative"
+      bg-linear-to-b from-primary to-white text-secondary relative"
     >
       {/* Loader Overlay */}
       {!loaded && <Loader />}
@@ -44,7 +44,7 @@ export default function AdminProductsPage() {
           <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-md">
             <table
               className="w-full text-sm sm:text-base border-collapse rounded-xl overflow-hidden
-              bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60"
+              bg-white/70 backdrop-blur supports-backdrop-filter:bg-white/60"
             >
               <thead className="bg-secondary text-primary/95">
                 <tr>
@@ -94,7 +94,7 @@ export default function AdminProductsPage() {
                       <img
                         src={item.images[0]}
                         alt={item.name}
-                        className="w-[28px] sm:w-[38px] h-[28px] sm:h-[38px] rounded-lg object-cover ring-1 ring-secondary/10 shadow-sm"
+                        className="w-7 sm:w-[38px] h-7 sm:h-[38px] rounded-lg object-cover ring-1 ring-secondary/10 shadow-sm"
                       />
                     </td>
                     <td className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-secondary/90 whitespace-nowrap">

@@ -21,21 +21,18 @@ function LoginPage() {
         }
       );
 
-      console.log(res.data);
-<<<<<<< HEAD
+console.log(res.data);
 
-      localStorage.setItem("token", res.data.token);
+localStorage.setItem("token", res.data.token);
 
-=======
->>>>>>> 9c5f4db6afe0328cc1b7a3becda99e32a3799640
-      const data = res.data;
-      if (res.data.role == "admin") {
-        // window.location.href = "/admin";
-        navigate("/admin");
-      } else {
-        // window.location.href = "/";
-        navigate("/");
-      }
+const data = res.data;
+if (res.data.role == "admin") {
+  // window.location.href = "/admin";
+  navigate("/admin");
+} else {
+  // window.location.href = "/";
+  navigate("/");
+}
 
       console.log("Login success:", data);
       toast.success("Login successful! Welcome back. ");
@@ -52,7 +49,7 @@ function LoginPage() {
         <img
           src="/logo.png"
           alt="logo"
-          className="w-[200px] h-[200px] mb-[20px] object-cover"
+          className="w-[200px] h-[200px] mb-5 object-cover"
         />
         <h1 className="text-[50px] text-gold text-shadow-accent text-center font-bold">
           Plug In. Power Up. Play Hard.
@@ -64,8 +61,8 @@ function LoginPage() {
 
       {/* Right section */}
       <div className="w-[50%] h-full flex justify-center items-center">
-        <div className="w-[450px] h-[500px] backdrop-blur-lg shadow-2xl rounded-2xl flex flex-col justify-center items-center p-[20px]">
-          <h1 className="text-[40px] font-bold mb-[20px] text-white text-shadow-accent">
+        <div className="w-[450px] h-[500px] backdrop-blur-lg shadow-2xl rounded-2xl flex flex-col justify-center items-center p-5">
+          <h1 className="text-[40px] font-bold mb-5 text-white text-shadow-accent">
             Login
           </h1>
 
@@ -74,7 +71,7 @@ function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             type="email"
             placeholder="your email"
-            className="w-[350px] h-[50px] mb-[20px] rounded-lg border border-accent p-[10px] text-[20px] focus:outline-none focus:ring-2 focus:ring-gold"
+            className="w-[350px] h-[50px] mb-5 rounded-lg border border-accent p-2.5 text-[20px] focus:outline-none focus:ring-2 focus:ring-gold"
           />
 
           <input
@@ -82,10 +79,10 @@ function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             type="password"
             placeholder="your password"
-            className="w-[350px] h-[50px] rounded-lg border border-accent p-[10px] text-[20px] focus:outline-none focus:ring-2 focus:ring-gold"
+            className="w-[350px] h-[50px] rounded-lg border border-accent p-2.5 text-[20px] focus:outline-none focus:ring-2 focus:ring-gold"
           />
 
-          <p className="text-white w-full mb-[20px] p-[10px] text-right not-italic">
+          <p className="text-white w-full mb-5 p-2.5 text-right not-italic">
             Forget your password?
             <Link to="/reset-password" className="text-gold italic">
               Reset here
@@ -94,7 +91,7 @@ function LoginPage() {
 
           <button
             onClick={login}
-            className="w-[350px] h-[50px] mb-[20px] font-bold rounded-lg bg-accent text-white border-accent border-[2px] p-[10px] text-[20px] hover:bg-transparent hover:text-accent transition-all"
+            className="w-[350px] h-[50px] mb-5 font-bold rounded-lg bg-accent text-white border-accent border-2 p-2.5 text-[20px] hover:bg-transparent hover:text-accent transition-all"
           >
             Login
           </button>

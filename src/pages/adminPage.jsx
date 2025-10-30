@@ -15,15 +15,15 @@ export default function AdminPage(){
                 </div>
                 <div className="w-full h-[400px] items-center p-2.5 text-white text-2xl flex flex-col">
 
-                    <Link to="/admin" className="w-full flex items-center h-[50px] gap-[10px]"> <LuClipboardList />Orders</Link>
-                    <Link to="/admin/products" className="w-full flex items-center h-[50px] gap-[10px]"> <LuBoxes />Products</Link>
-                    <Link to="/admin/users" className="w-full flex items-center h-[50px] gap-[10px]"><FiUsers/>Users</Link>
-                    <Link to="/admin/reviews" className="w-full flex items-center h-[50px] gap-[10px]"><MdOutlineRateReview />Reviews</Link>
+                    <Link to="/admin" className="w-full flex items-center h-[50px] gap-2.5"> <LuClipboardList />Orders</Link>
+                    <Link to="/admin/products" className="w-full flex items-center h-[50px] gap-2.5"> <LuBoxes />Products</Link>
+                    <Link to="/admin/users" className="w-full flex items-center h-[50px] gap-2.5"><FiUsers/>Users</Link>
+                    <Link to="/admin/reviews" className="w-full flex items-center h-[50px] gap-2.5"><MdOutlineRateReview />Reviews</Link>
 
 
                 </div>
             </div>
-            <div className="w-[calc(100%-250px)] h-full max-h-full bg-primary border-[10px] border-accent rounded-3xl overflow-y-scroll ">
+            <div className="w-[calc(100%-250px)] h-full max-h-full bg-primary border-10 border-accent rounded-3xl overflow-y-scroll ">
                 <Routes>
                     <Route path="/" element={<h1>Orders</h1>} />
                     <Route path="/products" element={<AdminProductsPage />} />
