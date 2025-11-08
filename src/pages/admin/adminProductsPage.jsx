@@ -1,6 +1,6 @@
 import axios from "axios";
 import { BiPlus } from "react-icons/bi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Loader from "../../components/loder"; // Adjust path if needed
@@ -9,6 +9,7 @@ import ProductDeleteButton from "../../components/productDeleteButton";
 export default function AdminProductsPage() {
   const [products, setProducts] = useState([]);
   const [loaded, setLoaded] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
   if (!loaded) {
@@ -130,7 +131,22 @@ export default function AdminProductsPage() {
                         {item.isAvailable ? "In Stock" : "Out of Stock"}
                       </span>
                     </td>
-                    <td className="px-3 sm:px-4 py-2 sm:py-3 text-center whitespace-nowrap">
+                    <td className="inline-flex gap-2 px-3 sm:px-4 py-2 sm:py-3 text-center whitespace-nowrap">
+                      {/* <Link
+                      state={item}
+                       
+                        to={`/admin/update-product/` }
+                        className="text-[10px] sm:text-sm sm:w-24 bg-accent flex justify-center items-center text-white sm:p-2 rounded-full cursor-pointer hover:bg-accent/80 transition"
+                      >
+                        Edit
+                      </Link> */}
+                      <button 
+                      onClick={()=>{
+                        navigate("/admin/update-product",{state: item})
+                      }}
+                      className="text-[10px] sm:text-sm sm:w-24 bg-accent flex justify-center items-center text-white sm:p-2 rounded-full cursor-pointer hover:bg-accent/80 transition">
+                        Edit
+                      </button>
                       <ProductDeleteButton productID={item.productID} reload={() => setLoaded(false)} />
                     </td>
                   </tr>
