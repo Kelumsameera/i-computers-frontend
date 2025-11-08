@@ -9,33 +9,24 @@ function LoginPage() {
   const navigate = useNavigate();
 
   async function login() {
-    console.log("Email:", email);
-    console.log("Password:", password);
-
     try {
       const res = await axios.post(
         import.meta.env.VITE_BACKEND_URL + "/users/login",
-        {
-          email: email,
-          password: password,
-        }
+        { email, password }
       );
 
-console.log(res.data);
+      const data = res.data;
+      localStorage.setItem("token", data.token);
 
-localStorage.setItem("token", res.data.token);
+      toast.success("Login successful! Welcome back.");
 
-const data = res.data;
-if (res.data.role == "admin") {
-  // window.location.href = "/admin";
-  navigate("/admin");
-} else {
-  // window.location.href = "/";
-  navigate("/");
-}
+      // Navigate based on role
+      if (data.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
 
-      console.log("Login success:", data);
-      toast.success("Login successful! Welcome back. ");
     } catch (err) {
       console.error("Error during login:", err);
       toast.error("Something went wrong. Please try again.");
