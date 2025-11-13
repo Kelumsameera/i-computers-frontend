@@ -1,8 +1,36 @@
-import React from 'react'
+import axios from "axios";
+import { useEffect, useState } from "react";
+import Loader from "../components/loder";
+import ProductCard from "../components/productCard";
 
 export default function ProductPage() {
-  return (
-    <div>Product Page</div>
-  )
-}
+  const [products, setProducts] = useState([]);
+  const [loaded, setLoaded] = useState(false);
 
+  useEffect(() => {
+    axios
+      .get(import.meta.env.VITE_BACKEND_URL + "/products")
+      .then((response) => {
+        console.log(response.data);
+        setProducts(response.data);
+        setLoaded(true);
+      })
+      .catch((err) => {
+        console.error("Error fetching products:", err);
+      });
+  }, []);
+
+  return (
+    <div className="w-full h-[calc(100vh-100px)]">
+      {!loaded ? (
+        <Loader />
+      ) : (
+        <div className="w-full flex justify-center p-4 flex-row flex-wrap">
+          {products.map((item) => {
+            return <ProductCard key={item.productID} product={item} />;
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
