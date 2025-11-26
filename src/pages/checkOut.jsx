@@ -1,8 +1,8 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { BsChevronUp } from "react-icons/bs";
-import { Link, useLocation, useNavigate } from "react-router-dom"; 
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function CheckoutPage() {
 	const location = useLocation();
@@ -10,126 +10,138 @@ export default function CheckoutPage() {
 	const [name, setName] = useState("");
 	const [address, setAddress] = useState("");
 	const [phone, setPhone] = useState("");
-	const [cart, setCart] = useState(location.state);
+	const [cart, setCart] = useState(location.state || []);
 
-	if (location.state == null) {
-		navigate("/products");
-	}
+	useEffect(() => {
+		if (!location.state || location.state.length === 0) {
+			navigate("/products");
+		}
+	}, [location.state]);
 
-	function getCartTotal() {
+	const getCartTotal = () => {
 		let total = 0;
-		cart.forEach((item) => {
+		for (const item of cart) {
 			total += item.price * item.quantity;
-		});
+		}
 		return total;
-	}
+	};
 
 	function submitOrder() {
 		const token = localStorage.getItem("token");
 		console.log(token);
-		if(token == null){
+		if (token == null) {
 			toast.error("You must be logged in to place an order");
 			navigate("/login");
 			return;
 		}
 
-		const orderItems = []
+		const orderItems = [];
 
 		cart.forEach((item) => {
 			orderItems.push({
 				productID: item.productID,
-				quantity: item.quantity
+				quantity: item.quantity,
+			});
+		});
+
+		axios
+			.post(
+				import.meta.env.VITE_BACKEND_URL + "/orders",
+				{
+					name: name,
+					address: address,
+					phone: phone,
+					items: orderItems,
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			)
+			.then(() => {
+				toast.success("Order placed successfully");
+				navigate("/orders");
 			})
-		});
-
-		axios.post(import.meta.env.VITE_BACKEND_URL + "/orders", {
-			name: name,
-			address: address,
-			phone: phone,
-			items: orderItems
-		},{
-			headers: {
-				"Authorization": `Bearer ${token}`
-			}
-		}
-		).then(() => {
-			toast.success("Order placed successfully");
-			navigate("/orders");
-		}).catch(() => {
-			toast.error("Error placing order");
-		});
-
+			.catch(() => {
+				toast.error("Error placing order");
+			});
 	}
 
 	return (
 		<div className="w-full flex flex-col items-center p-5">
-			{cart.map((item, index) => {
-				return (
-					<div className="w-[50%] h-[150px] rounded-xl overflow-hidden shadow-2xl my-1 flex justify-between">
-						<img
-							src={item.image}
-							className="h-full aspect-square object-cover"
-						/>
-						<div className="flex flex-col justify-center pl-4 w-[300px]">
-							<h1 className="text-2xl font-semibold relative hover:[&_.tooltip]:opacity-100">
-								<span className="opacity-0 tooltip italic text-sm absolute bottom-[-50px] bg-accent text-white p-2 rounded-lg">
-									{item.name}
-								</span>
-								{item.name.length > 20
-									? item.name.substring(0, 20) + "..."
-									: item.name}
-							</h1>
-							{item.labelledPrice > item.price && (
-								<h2 className="text-secondary/80 line-through decoration-gold/70 decoration-2 mr-2 text-lg">
-									LKR. {item.labelledPrice.toFixed(2)}
-								</h2>
-							)}
-							<h2 className="text-xl text-accent font-semibold mt-2">
-								LKR. {item.price.toFixed(2)}
-							</h2>
-							<h3 className="text-lg mt-2">{item.productID}</h3>
-						</div>
-						<div className="h-full flex flex-row items-center gap-4">
-							<div className="h-full flex flex-col justify-center items-center">
-								<BsChevronUp
-									onClick={() => {
-										// const copiedCart = {...cart}
-										const copiedCart = [...cart];
-										copiedCart[index].quantity += 1;
-										setCart(copiedCart);
-									}}
-									className="text-2xl cursor-pointer hover:text-accent transition"
-								/>
-								<span className="text-lg">{item.quantity}</span>
-								<BsChevronUp
-									onClick={() => {
-										const copiedCart = [...cart];
-										copiedCart[index].quantity -= 1;
-										if (copiedCart[index].quantity < 1) {
-											copiedCart.splice(index, 1);
-										}
-										setCart(copiedCart);
-									}}
-									className="rotate-180 text-2xl cursor-pointer hover:text-accent transition"
-								/>
-							</div>
-							<span className="pr-4 text-lg font-semibold w-[150px] text-right">
-								LKR. {(item.price * item.quantity).toFixed(2)}
-							</span>
-						</div>
+			{/* CART ITEMS */}
+			{cart.map((item, index) => (
+				<div
+					key={item.productID + "-" + index}
+					className="w-[50%] h-[150px] rounded-xl overflow-hidden shadow-2xl my-1 flex justify-between"
+				>
+					<img
+						src={item.image || "/placeholder.png"}
+						className="h-full aspect-square object-cover"
+					/>
+
+					<div className="flex flex-col justify-center pl-4 w-[300px]">
+						<h1 className="text-2xl font-semibold">
+							{item.name.length > 20
+								? item.name.substring(0, 20) + "..."
+								: item.name}
+						</h1>
+
+						<h2 className="text-xl text-accent font-semibold mt-2">
+							LKR {item.price.toFixed(2)}
+						</h2>
+
+						<h3 className="text-lg mt-2">{item.productID}</h3>
 					</div>
-				);
-			})}
-			<div className="w-[50%] p-4  rounded-xl overflow-hidden shadow-2xl my-1 flex flex-wrap justify-between items-center">
-				<div className="flex flex-col  w-[50%]">
+
+					<div className="h-full flex flex-row items-center gap-4">
+						<div className="h-full flex flex-col justify-center items-center">
+							<BsChevronUp
+								onClick={() => {
+									const newCart = [...cart];
+									newCart[index].quantity++;
+									setCart(newCart);
+								}}
+								className="text-2xl cursor-pointer hover:text-accent transition"
+							/>
+
+							<span className="text-lg">{item.quantity}</span>
+
+							<BsChevronUp
+								onClick={() => {
+									const newCart = [...cart];
+									newCart[index].quantity--;
+
+									if (newCart[index].quantity < 1) {
+										newCart.splice(index, 1);
+									}
+
+									setCart(newCart);
+								}}
+								className="rotate-180 text-2xl cursor-pointer hover:text-accent transition"
+							/>
+						</div>
+
+						<span className="pr-4 text-lg font-semibold min-w-[150px] text-right">
+							LKR {(item.price * item.quantity).toFixed(2)}
+						</span>
+					</div>
+				</div>
+			))}
+
+			{/* INPUTS */}
+			<div className="w-[50%] p-4 rounded-xl shadow-2xl my-1 flex flex-wrap justify-between items-center">
+				<div className="flex flex-col w-[50%]">
 					<label>Name</label>
 					<input
 						type="text"
 						value={name}
 						onChange={(e) => setName(e.target.value)}
-						className="  px-6 py-3 rounded border-2 border-secondary/30 focus:border-accent outline-none transition w-[300px]"
+						className="px-6 py-3 rounded border-2 border-secondary/30 focus:border-accent outline-none transition w-[300px]"
 					/>
 				</div>
+
 				<div className="flex flex-col w-[50%]">
 					<label>Phone</label>
 					<input
@@ -139,25 +151,28 @@ export default function CheckoutPage() {
 						className="px-6 py-3 rounded border-2 border-secondary/30 focus:border-accent outline-none transition w-[300px]"
 					/>
 				</div>
-				<div className="flex flex-col w-full ">
+
+				<div className="flex flex-col w-full">
 					<label>Address</label>
 					<textarea
-						type="text"
 						value={address}
 						onChange={(e) => setAddress(e.target.value)}
-						className=" px-6 py-3 rounded border-2 border-secondary/30 focus:border-accent outline-none transition w-w-full"
+						className="px-6 py-3 rounded border-2 border-secondary/30 focus:border-accent outline-none transition w-full"
 					/>
 				</div>
 			</div>
-			<div className="w-[50%] h-[150px] rounded-xl overflow-hidden shadow-2xl my-1 flex justify-between items-center">
+
+			{/* TOTAL */}
+			<div className="w-[50%] h-[150px] rounded-xl shadow-2xl my-1 flex justify-between items-center">
 				<button
 					onClick={submitOrder}
-					className="self-center ml-4 px-6 py-3 rounded bg-accent text-white hover:bg-accent/90 transition"
+					className="ml-4 px-6 py-3 rounded bg-accent text-white hover:bg-accent/90 transition"
 				>
 					Order Now
 				</button>
+
 				<span className="pr-4 text-xl font-bold min-w-[150px] text-right">
-					LKR. {getCartTotal().toFixed(2)}
+					LKR {getCartTotal().toFixed(2)}
 				</span>
 			</div>
 		</div>
