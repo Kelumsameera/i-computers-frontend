@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function ProductCard({ product }) {
   return (
-    <div className="w-[300px] h-[400px] m-4 shadow-2xl cursor-pointer relative hover:[&_.buttons]:opacity-100 hover:[&_.primary-image]:opacity-0">
+    <Link to={"/overview/" + product.productID} className="w-[300px] h-[400px] m-4 shadow-2xl cursor-pointer relative hover:[&_.buttons]:opacity-100 hover:[&_.primary-image]:opacity-0">
       <div className="w-full h-[250px] bg-red-900 relative">
         <img
           src={product.images?.[1] || ""}
@@ -31,13 +31,13 @@ export default function ProductCard({ product }) {
       </div>
 
       <div className="w-full h-[150px] bottom-0 opacity-0 absolute buttons bg-white flex flex-row gap-4 justify-center items-center transition-opacity duration-300">
-        <Link
+        <button
           to={"/overview/" + product.productID}
           className="border-2 border-accent text-accent hover:bg-accent hover:text-white transition-colors duration-150 h-[50px] w-[150px] flex justify-center items-center"
         >
           View Details
-        </Link>
+        </button>
       </div>
-    </div>
+    </Link>
   );
 }

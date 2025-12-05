@@ -35,15 +35,16 @@ export default function ProductOverview() {
       )}
 
       {status === "success" && (
-        <div className="w-full min-h-[calc(100vh-100px)] flex">
+        <div className="w-full min-h-[calc(100vh-100px)] flex flex-col lg:flex-row">
+          <h1 className="text-4xl font-semibold lg:hidden text-center sticky top-0 bg-white">{product.name}</h1>
           {/* LEFT SIDE */}
-          <div className="w-1/2 h-auto flex justify-center items-center p-5">
+          <div className="w-full lg:w-1/2 h-auto flex justify-center items-center p-5">
             <ImageSlider images={product.images} />
           </div>
 
           {/* RIGHT SIDE */}
-          <div className="w-1/2 h-auto p-10 flex flex-col gap-6">
-            <h1 className="text-4xl font-semibold">{product.name}</h1>
+          <div className="w-full lg:w-1/2 h-auto p-10 flex flex-col gap-6">
+            <h1 className="text-4xl font-semibold hidden lg:block">{product.name}</h1>
             <h2 className="text-lg text-secondary/80">{product.productID}</h2>
 
             <h3 className="text-lg text-secondary/80 flex items-center">

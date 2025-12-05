@@ -2,6 +2,7 @@ import { LucideListCollapse } from "lucide-react";
 import { Link } from "react-router-dom";
 import { BiShoppingBag } from "react-icons/bi";
 import { useState } from "react";
+import UserData from "./userData";
 
 export default function Header() {
 	const [sideBarOpen, setSideBarOpen] = useState(false);
@@ -19,6 +20,10 @@ export default function Header() {
 				<Link to="/products">Products</Link>
 				<Link to="/about">About</Link>
 				<Link to="/contact">Contact</Link>
+			</div>
+			<div className="absolute right-24 top-0 h-full  items-center hidden lg:flex">
+				<UserData />
+
 			</div>
 			<Link
 				to="/cart"
@@ -61,6 +66,9 @@ export default function Header() {
                                 >
                                     About
                                 </a>
+								<div className=" flex justify-center bg-accent p-2 rounded-full">
+									<UserData />
+								</div>
                             </div>
 						</div>
 					</div>
