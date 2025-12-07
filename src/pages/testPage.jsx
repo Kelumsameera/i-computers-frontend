@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { uploadMedia } from "../../utils/mediaUpload.js";
+import { uploadMedia } from "../utils/uploadMedia";
 import toast from "react-hot-toast";
 
 export default function TestPage() {

@@ -3,7 +3,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { AiOutlineProduct } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
-import { uploadMedia} from "../../../utils/mediaUpload.js";
+import { uploadMedia} from "../../utils/uploadMedia";
 
 export default function AdminAddProductPage() {
   const [productID, setProductID] = useState("");

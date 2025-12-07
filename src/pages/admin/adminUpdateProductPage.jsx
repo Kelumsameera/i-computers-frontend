@@ -8,7 +8,8 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import { uploadMedia } from "../../../utils/mediaUpload.js";
+import { uploadMedia } from "../../utils/uploadMedia.js";
+
 
 export default function AdminUpdateProductPage() {
   const location = useLocation();
@@ -43,7 +44,7 @@ export default function AdminUpdateProductPage() {
     const imagePromises = [];
 
     for (let i = 0; i < files.length; i++) {
-      const promise = uploadFile(files[i]);
+      const promise = uploadMedia(files[i]);
       imagePromises.push(promise);
     }
 
