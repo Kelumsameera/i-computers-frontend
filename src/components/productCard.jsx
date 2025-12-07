@@ -1,42 +1,120 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
+// ============================
+// ⭐ Star Rating Component
+// ============================
+function StarRating({ rating = 0, size = 16 }) {
+  const stars = [];
+  const full = Math.floor(rating);
+  const half = rating % 1 >= 0.5;
+
+  for (let i = 0; i < 5; i++) {
+    if (i < full) {
+      stars.push(<span key={i} style={{ fontSize: size, color: "#e29816" }}>★</span>);
+    } else if (i === full && half) {
+      stars.push(
+        <span key={i} style={{ position: "relative", display: "inline-block", fontSize: size }}>
+          <span style={{ color: "#ccc" }}>★</span>
+          <span style={{ color: "#e29816", position: "absolute", left: 0, width: "50%", overflow: "hidden" }}>★</span>
+        </span>
+      );
+    } else {
+      stars.push(<span key={i} style={{ fontSize: size, color: "#ccc" }}>★</span>);
+    }
+  }
+  return <div className="flex">{stars}</div>;
+}
+
+// ============================
+// ⭐ MAIN COMPONENT
+// ============================
 export default function ProductCard({ product }) {
+  // ⭐ NEW: State for rating + review count
+  const [averageRating, setAverageRating] = useState(0);
+  const [reviewCount, setReviewCount] = useState(0);
+
+  // ⭐ NEW: Fetch ratings from backend
+  useEffect(() => {
+    if (!product?.productID) return;
+
+    axios
+      .get(`${import.meta.env.VITE_BACKEND_URL}/reviews/${product.productID}`)
+      .then((res) => {
+        const reviews = res.data.reviews || res.data || [];
+
+        if (reviews.length === 0) {
+          setAverageRating(0);
+          setReviewCount(0);
+          return;
+        }
+
+        // Calculate avg rating
+        const sum = reviews.reduce((acc, r) => acc + Number(r.rating || 0), 0);
+        const avg = sum / reviews.length;
+
+        setAverageRating(Number(avg.toFixed(1)));
+        setReviewCount(reviews.length);
+      })
+      .catch(() => {
+        setAverageRating(0);
+        setReviewCount(0);
+      });
+  }, [product?.productID]);
+
+  // 🔒 Safe product fields
+  const name = product?.name ?? "Unnamed Product";
+  const images = product?.images ?? [];
+  const mainImage = images[0] ?? "";
+  const secondaryImage = images[1] ?? mainImage;
+
+  const price = Number(product?.price ?? 0);
+  const labelledPrice = Number(product?.labelledPrice ?? price);
+
+  const discount =
+    labelledPrice > price
+      ? Math.round(((labelledPrice - price) / labelledPrice) * 100)
+      : 0;
+
   return (
-    <Link to={"/overview/" + product.productID} className="w-[300px] h-[400px] m-4 shadow-2xl cursor-pointer relative hover:[&_.buttons]:opacity-100 hover:[&_.primary-image]:opacity-0">
-      <div className="w-full h-[250px] bg-red-900 relative">
-        <img
-          src={product.images?.[1] || ""}
-          className="w-full h-full absolute bg-white object-cover"
-          alt={product.name}
-        />
-        <img
-          src={product.images?.[0] || ""}
-          className="w-full h-full absolute bg-white primary-image object-cover hover:opacity-0 transition-opacity duration-500"
-          alt={product.name}
-        />
+    <Link
+      to={`/overview/${product?.productID}`}
+      className="w-full sm:w-[300px] shadow-lg hover:shadow-2xl rounded-lg overflow-hidden bg-white transition"
+    >
+      {/* IMAGE */}
+      <div className="w-full h-[200px] sm:h-[250px] relative">
+        <img src={secondaryImage} className="absolute w-full h-full object-cover" />
+        <img src={mainImage} className="absolute w-full h-full object-cover primary-image transition-opacity duration-500" />
+
+        {discount > 0 && (
+          <div className="absolute top-2 right-2 bg-gold text-white px-2 py-1 rounded-full text-xs font-bold">
+            {discount}% OFF
+          </div>
+        )}
       </div>
 
-      <div className="w-full h-[150px] flex flex-col p-2 justify-between">
-        <h1 className="text-center text-lg">{product.name}</h1>
-        <div className="w-full flex flex-col items-center">
-          {product.labelledPrice > product.price && (
-            <h2 className="text-secondary/80 line-through decoration-[gold] decoration-2 mr-2">
-              LKR. {product.labelledPrice.toFixed(2)}
-            </h2>
-          )}
-          <h2 className="text-accent font-semibold text-2xl">
-            LKR. {product.price.toFixed(2)}
-          </h2>
+      {/* DETAILS */}
+      <div className="p-4 flex flex-col gap-3">
+        <h1 className="text-center text-lg font-medium line-clamp-2">{name}</h1>
+
+        {/* ⭐ RATING DISPLAY FROM BACKEND */}
+        <div className="flex items-center justify-center gap-2">
+          <StarRating rating={averageRating} size={16} />
+          <span className="text-xs text-gray-500">
+            {averageRating > 0 ? `${averageRating} (${reviewCount})` : "No ratings"}
+          </span>
         </div>
-      </div>
 
-      <div className="w-full h-[150px] bottom-0 opacity-0 absolute buttons bg-white flex flex-row gap-4 justify-center items-center transition-opacity duration-300">
-        <button
-          to={"/overview/" + product.productID}
-          className="border-2 border-accent text-accent hover:bg-accent hover:text-white transition-colors duration-150 h-[50px] w-[150px] flex justify-center items-center"
-        >
-          View Details
-        </button>
+        {/* PRICE */}
+        <div className="text-center">
+          {discount > 0 && (
+            <p className="line-through text-sm text-gray-500">
+              LKR {labelledPrice.toFixed(2)}
+            </p>
+          )}
+          <p className="text-xl font-bold text-accent">LKR {price.toFixed(2)}</p>
+        </div>
       </div>
     </Link>
   );

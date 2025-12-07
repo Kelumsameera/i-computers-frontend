@@ -11,33 +11,42 @@ export default function LoginPage() {
 	const [password, setPassword] = useState("");
 	const navigate = useNavigate();
 	const [isLoading, setIsLoading] = useState(false);
+	
 	const googleLogin = useGoogleLogin({
 		onSuccess: (response) => { 
 			setIsLoading(true);
 			axios.post(import.meta.env.VITE_BACKEND_URL + "/users/google-login", {
 				token: response.access_token,
 			}).then((res) => {
+				// Use sessionStorage instead of localStorage
 				localStorage.setItem("token", res.data.token);
-				if (res.data.role == "admin") {
+				if (res.data.role === "admin") {
 					navigate("/admin");
 				} else {
 					navigate("/");
 				}
-				toast.success("Login successful!.");
+				toast.success("Login successful!");
 				setIsLoading(false);
 			}).catch((err) => {
 				console.log(err);
+				toast.error("Google Login Failed");
+				setIsLoading(false);
 			});
-			setIsLoading(false);
-		 },
-		onError: () => { toast.error("Google Login Failed"); },
-		onNonOAuthError: () => { toast.error("Google Login Failed"); },
-	})
+		},
+		onError: () => { 
+			toast.error("Google Login Failed"); 
+		},
+		onNonOAuthError: () => { 
+			toast.error("Google Login Failed"); 
+		},
+	});
 
 	async function login() {
-		console.log("Login button clicked");
-		console.log("Email:", email);
-		console.log("Password:", password);
+		if (!email || !password) {
+			toast.error("Please fill in all fields");
+			return;
+		}
+
 		setIsLoading(true);
 		try {
 			const res = await axios.post(
@@ -48,92 +57,104 @@ export default function LoginPage() {
 				}
 			);
 
-			console.log(res.data.token);
-
+			// Use sessionStorage instead of localStorage
 			localStorage.setItem("token", res.data.token);
-			console.log();
-			if (res.data.role == "admin") {
-				//window.location.href = "/admin";
+			
+			if (res.data.role === "admin") {
 				navigate("/admin");
 			} else {
-				//window.location.href = "/";
 				navigate("/");
 			}
-
-			//alert("Login successful! Welcome back.");
 
 			toast.success("Login successful! Welcome back.");
 			setIsLoading(false);
 		} catch (err) {
-			//alert("Login failed! Please check your credentials and try again.");
 			toast.error("Login failed! Please check your credentials and try again.");
-
-			console.log("Error during login:");
-			console.log(err);
+			console.log("Error during login:", err);
 			setIsLoading(false);
 		}
 	}
 
+	const handleKeyPress = (e) => {
+		if (e.key === "Enter") {
+			login();
+		}
+	};
+
 	return (
-		<div className="w-full h-screen bg-[url('/bg.jpg')] bg-center bg-cover bg-no-repeat flex">
-			<div className="w-[50%] h-full flex justify-center items-center flex-col p-[50px]">
+		<div className="w-full min-h-screen bg-[url('/bg.jpg')] bg-center bg-cover bg-no-repeat flex flex-col lg:flex-row">
+			{/* Left Side - Branding */}
+			<div className="w-full lg:w-1/2 h-auto lg:h-full flex justify-center items-center flex-col p-8 lg:p-12">
 				<img
 					src="/logo.png"
 					alt="logo"
-					className="w-[200px] h-[200px] mb-5 object-cover"
+					className="w-32 h-32 lg:w-48 lg:h-48 mb-4 lg:mb-5 object-cover"
 				/>
-				<h1 className="text-[50px] text-gold text-shadow-accent text-shadow-2xs text-center font-bold">
+				<h1 className="text-3xl lg:text-5xl text-gold text-center font-bold mb-2 drop-shadow-lg">
 					Plug In. Power Up. Play Hard.
 				</h1>
-				<p className="text-[30px] text-white italic">
+				<p className="text-lg lg:text-2xl text-white italic text-center">
 					Your Ultimate Destination for Gaming Gear
 				</p>
 			</div>
-			<div className="w-[50%] h-full flex justify-center items-center">
-				<div className="w-[450px] h-[600px] backdrop-blur-lg shadow-2xl rounded-2xl flex flex-col justify-center items-center p-[30px]">
-					<h1 className="text-[40px] font-bold mb-5-white text-shadow-white ">
+
+			{/* Right Side - Login Form */}
+			<div className="w-full lg:w-1/2 h-auto lg:h-full flex justify-center items-center p-4 lg:p-8">
+				<div className="w-full max-w-md backdrop-blur-lg shadow-2xl rounded-2xl flex flex-col justify-center items-center p-6 lg:p-8 bg-white/10">
+					<h1 className="text-3xl lg:text-4xl font-bold mb-6 text-white drop-shadow-lg">
 						Login
 					</h1>
+					
 					<input
-						onChange={(e) => {
-							setEmail(e.target.value);
-						}}
+						onChange={(e) => setEmail(e.target.value)}
+						onKeyPress={handleKeyPress}
 						type="email"
-						placeholder="your email"
-						className="w-full h-[50px] mb-5 rounded-lg border border-accent p-2.5 text-[20px] focus:outline-none focus:ring-2 focus:ring-gold"
+						placeholder="Your email"
+						value={email}
+						className="w-full h-12 lg:h-14 mb-4 rounded-lg border-2 border-accent/50 p-3 text-base lg:text-lg focus:outline-none focus:ring-2 focus:ring-gold focus:border-gold transition-all"
 					/>
+					
 					<input
-						onChange={(e) => {
-							setPassword(e.target.value);
-						}}
+						onChange={(e) => setPassword(e.target.value)}
+						onKeyPress={handleKeyPress}
 						type="password"
-						placeholder="your password"
-						className="w-full h-[50px]  rounded-lg border border-accent p-2.5xt-[20px] focus:outline-none focus:ring-2 focus:ring-gold"
+						placeholder="Your password"
+						value={password}
+						className="w-full h-12 lg:h-14 mb-3 rounded-lg border-2 border-accent/50 p-3 text-base lg:text-lg focus:outline-none focus:ring-2 focus:ring-gold focus:border-gold transition-all"
 					/>
-					<p className="text-white not-italic w-full mb-5 text-right">
-						Forget your password?
-						<Link to="/forgot-password" className="text-gold italic">
-							Reset it here
+					
+					<div className="w-full mb-5 text-right">
+						<Link to="/forgot-password" className="text-gold hover:text-gold/80 text-sm lg:text-base transition-colors">
+							Forgot password?
 						</Link>
-					</p>
+					</div>
 
 					<button
 						onClick={login}
-						className="w-full h-[50px] mb-5 bg-accent text-white font-bold text-[20px] rounded-lg border-2 border-accent hover:bg-transparent hover:text-accent"
+						disabled={isLoading}
+						className="w-full h-12 lg:h-14 mb-4 bg-accent text-white font-bold text-lg lg:text-xl rounded-lg border-2 border-accent hover:bg-transparent hover:text-accent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						Login
 					</button>
-					<button onClick={googleLogin} className="w-full h-[50px] bg-accent text-white font-bold text-[20px] rounded-lg border-2 border-accent hover:bg-transparent hover:text-accent">
-						Login with <GrGoogle className="inline ml-2 mb-1" />
+					
+					<button 
+						onClick={googleLogin}
+						disabled={isLoading}
+						className="w-full h-12 lg:h-14 mb-4 bg-white text-accent font-bold text-base lg:text-lg rounded-lg border-2 border-white hover:bg-transparent hover:text-white transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+					>
+						<GrGoogle className="text-xl" />
+						Login with Google
 					</button>
-					<p className="text-white not-italic">
-						Don't have an account?
-						<Link to="/register" className="text-gold italic">
+					
+					<p className="text-white text-sm lg:text-base text-center">
+						Don't have an account?{" "}
+						<Link to="/register" className="text-gold hover:text-gold/80 font-semibold transition-colors">
 							Register here
 						</Link>
 					</p>
 				</div>
 			</div>
+
 			{isLoading && <Loader />}
 		</div>
 	);
