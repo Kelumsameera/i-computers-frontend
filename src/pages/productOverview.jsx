@@ -6,6 +6,7 @@ import Loader from "../components/loder";
 import ImageSlider from "../components/imageSlider";
 import { CgChevronRight } from "react-icons/cg";
 import { addToCart } from "../../utils/cart";
+import ProductReviews from "../components/productReviews";
 
 export default function ProductOverview() {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ export default function ProductOverview() {
       )}
 
       {status === "success" && (
+        <div>
         <div className="w-full min-h-[calc(100vh-100px)] flex flex-col lg:flex-row">
           <h1 className="text-4xl font-semibold lg:hidden text-center sticky top-0 bg-white">{product.name}</h1>
           {/* LEFT SIDE */}
@@ -50,6 +52,12 @@ export default function ProductOverview() {
             <h3 className="text-lg text-secondary/80 flex items-center">
               <CgChevronRight /> {product.category}
             </h3>
+            {/* alternative names */}
+						{product.altNames && product.altNames.length > 0 && (
+							<h3 className="text-md text-secondary/80">
+								{product.altNames.join(" | ")}
+							</h3>
+						)}
 
             <p className="text-md text-justify text-secondary/90 h-32 overflow-y-auto">
               {product.description}
@@ -94,7 +102,11 @@ export default function ProductOverview() {
                 Buy Now
               </button>
             </div>
+            
           </div>
+          
+        </div>
+        <ProductReviews />
         </div>
       )}
     </>
