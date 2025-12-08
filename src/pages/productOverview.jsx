@@ -6,7 +6,6 @@ import Loader from "../components/loder";
 import ImageSlider from "../components/imageSlider";
 import { CgChevronRight } from "react-icons/cg";
 import { addToCart } from "../utils/cart";
-import ProductReviews from "../components/productReviews";
 
 export default function ProductOverview() {
   const navigate = useNavigate();

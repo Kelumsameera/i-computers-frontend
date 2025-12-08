@@ -10,7 +10,7 @@ import AdminUpdateProductPage from "./admin/adminUpdateProductPage";
 import AdminOrdersPage from "./admin/adminOrdersPage";
 import AdminUsersPage from "./admin/adminUsersPage";
 import AdminReviewsPage from "./admin/adminReviewsPage";
-import AdminDashboardPage from "./admin/adminDashboardPage"; // FIXED NAME
+import AdminDashBoardPage from "./admin/adminDashboardPage"; 
 
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -111,7 +111,7 @@ export default function AdminPage() {
           <div className="w-[calc(100%-250px)] h-full max-h-full bg-primary border-8 border-accent rounded-3xl overflow-y-scroll">
             <Routes>
               {/* All routes MUST start *after* /admin */}
-              <Route path="/dashboard" element={<AdminDashboardPage />} />
+              <Route path="/dashboard" element={<AdminDashBoardPage />} />
               <Route path="/analytics" element={<AdminAnalyticsPage />} />
 
               <Route path="/orders" element={<AdminOrdersPage />} />
