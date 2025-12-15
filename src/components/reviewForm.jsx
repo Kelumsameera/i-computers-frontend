@@ -1,23 +1,22 @@
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 
 export default function ReviewForm() {
-  const { state } = useLocation();
+  const { productID } = useParams();
   const navigate = useNavigate();
-
-  const productId = state?.productId;
 
   const [name, setName] = useState("");
   const [title, setTitle] = useState("");
   const [rating, setRating] = useState(5);
   const [content, setContent] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  if (!productId) {
+  if (!productID) {
     return (
       <div className="p-10 text-center text-red-600 font-bold">
-        Error: Product ID missing
+        Product ID missing
       </div>
     );
   }
@@ -28,24 +27,29 @@ export default function ReviewForm() {
       return;
     }
 
+    setLoading(true);
+
     try {
-      await axios.post(import.meta.env.VITE_BACKEND_URL + "/reviews/add", {
-        productId,
-        name,
-        title,
-        rating,
-        content,
-        verified: false,
-      });
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/reviews/add`,
+        {
+          productId: productID,
+          name,
+          title,
+          rating: Number(rating),
+          content,
+          verified: false,
+        }
+      );
 
-      toast.success("Review submitted!");
+      toast.success("Review submitted successfully");
 
-      // Go back to product page after submit
-      navigate(`/product/${productId}`, { replace: true });
-
+      navigate(`/overview/${productID}`, { replace: true });
     } catch (err) {
       toast.error("Failed to submit review");
-      console.log(err);
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -57,66 +61,55 @@ export default function ReviewForm() {
       </h1>
 
       {/* NAME */}
-      <div className="mb-4">
-        <label className="font-semibold">Your Name *</label>
-        <input
-          className="w-full border p-2 rounded-xl mt-1"
-          placeholder="Enter your name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </div>
+      <input
+        className="w-full border p-2 rounded-xl mb-3"
+        placeholder="Your Name *"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
 
-      {/* REVIEW TITLE */}
-      <div className="mb-4">
-        <label className="font-semibold">Review Title *</label>
-        <input
-          className="w-full border p-2 rounded-xl mt-1"
-          placeholder="Short headline (e.g. Great product!)"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-      </div>
+      {/* TITLE */}
+      <input
+        className="w-full border p-2 rounded-xl mb-3"
+        placeholder="Review Title *"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
 
       {/* RATING */}
-      <div className="mb-4">
-        <label className="font-semibold">Rating *</label>
-        <select
-          className="w-full border p-2 rounded-xl mt-1"
-          value={rating}
-          onChange={(e) => setRating(e.target.value)}
-        >
-          <option value="1">⭐ 1</option>
-          <option value="2">⭐⭐ 2</option>
-          <option value="3">⭐⭐⭐ 3</option>
-          <option value="4">⭐⭐⭐⭐ 4</option>
-          <option value="5">⭐⭐⭐⭐⭐ 5</option>
-        </select>
-      </div>
+      <select
+        className="w-full border p-2 rounded-xl mb-3"
+        value={rating}
+        onChange={(e) => setRating(e.target.value)}
+      >
+        <option value="5">⭐⭐⭐⭐⭐ 5</option>
+        <option value="4">⭐⭐⭐⭐ 4</option>
+        <option value="3">⭐⭐⭐ 3</option>
+        <option value="2">⭐⭐ 2</option>
+        <option value="1">⭐ 1</option>
+      </select>
 
       {/* CONTENT */}
-      <div className="mb-4">
-        <label className="font-semibold">Your Review *</label>
-        <textarea
-          className="w-full border p-2 rounded-xl mt-1 h-32"
-          placeholder="Write your full review..."
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
-      </div>
+      <textarea
+        className="w-full border p-2 rounded-xl h-32 mb-4"
+        placeholder="Write your review *"
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+      />
 
-      {/* SUBMIT BUTTON */}
+      {/* SUBMIT */}
       <button
+        disabled={loading}
         onClick={handleSubmit}
-        className="w-full bg-black text-white py-2 rounded-xl font-semibold hover:bg-gray-800 transition"
+        className="w-full bg-black text-white py-2 rounded-xl font-semibold hover:bg-gray-800 disabled:opacity-60"
       >
-        Submit Review
+        {loading ? "Submitting..." : "Submit Review"}
       </button>
 
-      {/* Back button */}
+      {/* CANCEL */}
       <button
         onClick={() => navigate(-1)}
-        className="w-full mt-3 border-2 border-black py-2 rounded-xl font-semibold hover:bg-black hover:text-white transition"
+        className="w-full mt-3 border-2 border-black py-2 rounded-xl font-semibold hover:bg-black hover:text-white"
       >
         Cancel
       </button>

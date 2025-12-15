@@ -27,9 +27,7 @@ export default function AdminAnalyticsPage() {
   const [users, setUsers] = useState([]);
   const [reviews, setReviews] = useState([]);
 
-  // ---------------------------
-  // FETCH ALL ANALYTICS DATA
-  // ---------------------------
+  //Load Analytics Data
   const loadAnalytics = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -67,11 +65,7 @@ export default function AdminAnalyticsPage() {
 
   if (loading) return <Loader />;
 
-  // ---------------------------
-  // CALCULATE ANALYTICS
-  // ---------------------------
-
-  // 1️⃣ Orders Per Day
+  //Calculate Analytics Data
   const ordersPerDay = {};
   orders.forEach((o) => {
     const date = new Date(o.date).toLocaleDateString();
@@ -82,7 +76,7 @@ export default function AdminAnalyticsPage() {
     count,
   }));
 
-  // 2️⃣ Revenue Per Day
+  // 2️ Revenue Per Day
   const revenuePerDay = {};
   orders.forEach((o) => {
     const date = new Date(o.date).toLocaleDateString();
@@ -93,7 +87,7 @@ export default function AdminAnalyticsPage() {
     total,
   }));
 
-  // 3️⃣ Product Category Distribution
+  // 3️ Product Category Distribution
   const categoryCount = {};
   products.forEach((p) => {
     const cat = p.category || "Uncategorized";
@@ -107,9 +101,7 @@ export default function AdminAnalyticsPage() {
 
   const COLORS = ["#FF8042", "#00C49F", "#0088FE", "#FFBB28", "#AF19FF"];
 
-  // ---------------------------
-  // KPIs
-  // ---------------------------
+  // 4️ Key Performance Indicators (KPIs)
   const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
 
   const today = new Date().toLocaleDateString();
@@ -127,12 +119,11 @@ export default function AdminAnalyticsPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">📊 Advanced Analytics Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-6">
+        📊 Advanced Analytics Dashboard
+      </h1>
 
-      {/* KPI CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-
-        {/* TOTAL REVENUE */}
         <div className="p-5 bg-white rounded-xl shadow-lg">
           <p className="text-gray-500">Total Revenue</p>
           <h2 className="text-3xl font-bold mt-2">
@@ -140,7 +131,6 @@ export default function AdminAnalyticsPage() {
           </h2>
         </div>
 
-        {/* TOTAL ORDERS */}
         <div className="p-5 bg-white rounded-xl shadow-lg">
           <p className="text-gray-500">Total Orders</p>
           <h2 className="text-3xl font-bold mt-2">{orders.length}</h2>
@@ -154,23 +144,18 @@ export default function AdminAnalyticsPage() {
           </div>
         </div>
 
-        {/* TOTAL USERS */}
         <div className="p-5 bg-white rounded-xl shadow-lg">
           <p className="text-gray-500">Total Users</p>
           <h2 className="text-3xl font-bold mt-2">{users.length}</h2>
         </div>
 
-        {/* REVIEWS */}
         <div className="p-5 bg-white rounded-xl shadow-lg">
           <p className="text-gray-500">Total Reviews</p>
           <h2 className="text-3xl font-bold mt-2">{reviews.length}</h2>
         </div>
       </div>
 
-      {/* CHARTS GRID */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-        {/* ORDERS PER DAY CHART */}
         <div className="bg-white p-6 rounded-xl shadow-lg">
           <h3 className="text-xl font-semibold mb-3">📈 Orders Per Day</h3>
           <LineChart width={500} height={250} data={ordersChart}>
@@ -178,11 +163,15 @@ export default function AdminAnalyticsPage() {
             <XAxis dataKey="day" />
             <YAxis />
             <Tooltip />
-            <Line type="monotone" dataKey="count" stroke="#0088FE" strokeWidth={3} />
+            <Line
+              type="monotone"
+              dataKey="count"
+              stroke="#0088FE"
+              strokeWidth={3}
+            />
           </LineChart>
         </div>
 
-        {/* REVENUE PER DAY */}
         <div className="bg-white p-6 rounded-xl shadow-lg">
           <h3 className="text-xl font-semibold mb-3">💰 Revenue Per Day</h3>
           <BarChart width={500} height={250} data={revenueChart}>
@@ -194,9 +183,10 @@ export default function AdminAnalyticsPage() {
           </BarChart>
         </div>
 
-        {/* CATEGORY DISTRIBUTION */}
         <div className="bg-white p-6 rounded-xl shadow-lg col-span-1 lg:col-span-2">
-          <h3 className="text-xl font-semibold mb-3">📦 Product Category Breakdown</h3>
+          <h3 className="text-xl font-semibold mb-3">
+            📦 Product Category Breakdown
+          </h3>
           <PieChart width={600} height={300}>
             <Pie
               data={categoryData}

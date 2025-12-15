@@ -10,7 +10,7 @@ export default function OrdersPage() {
 	useEffect(() => {
 		if (!loaded) {
 			// Use session state instead of localStorage for token
-			const token = sessionStorage.getItem("token");
+			const token = localStorage.getItem("token");
 			
 			axios
 				.get(import.meta.env.VITE_BACKEND_URL + "/orders", {
