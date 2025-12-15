@@ -57,29 +57,29 @@ export default function AdminPage() {
         </div>
 
         <nav className="flex flex-col justify-center flex-1 gap-1 px-2 text-lg">
-          <div className="w-full h-[400px] text-white text-2xl flex flex-col pl-[20px] pt-[20px]">
+          <div className="w-full h-[400px] text-white text-2xl flex flex-col pl-5 pt-5">
 
-            <Link to="/admin" className="w-full flex items-center h-[50px] gap-[10px]">
+            <Link to="/admin" className="w-full flex items-center h-[50px] gap-2.5">
               <RxDashboard /> Dashboard
             </Link>
 
-            <Link to="/admin/analytics" className="w-full flex items-center h-[50px] gap-[10px]">
+            <Link to="/admin/analytics" className="w-full flex items-center h-[50px] gap-2.5">
               <RxDashboard /> Analytics
             </Link>
 
-            <Link to="/admin/orders" className="w-full flex items-center h-[50px] gap-[10px]">
+            <Link to="/admin/orders" className="w-full flex items-center h-[50px] gap-2.5">
               <LuClipboardList /> Orders
             </Link>
 
-            <Link to="/admin/products" className="w-full flex items-center h-[50px] gap-[10px]">
+            <Link to="/admin/products" className="w-full flex items-center h-[50px] gap-2.5">
               <LuBoxes /> Products
             </Link>
 
-            <Link to="/admin/users" className="w-full flex items-center h-[50px] gap-[10px]">
+            <Link to="/admin/users" className="w-full flex items-center h-[50px] gap-2.5">
               <FiUsers /> Users
             </Link>
 
-            <Link to="/admin/reviews" className="w-full flex items-center h-[50px] gap-[10px]">
+            <Link to="/admin/reviews" className="w-full flex items-center h-[50px] gap-2.5">
               <MdOutlineRateReview /> Reviews
             </Link>
 
