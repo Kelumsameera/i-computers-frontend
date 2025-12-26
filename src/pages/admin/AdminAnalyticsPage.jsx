@@ -1,208 +1,209 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import Loader from "../../components/loder";
 
 import {
-  LineChart,
-  Line,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
+  AreaChart,
+  Area,
   BarChart,
   Bar,
   PieChart,
   Pie,
   Cell,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
   Legend,
+  ResponsiveContainer,
 } from "recharts";
 
-import { FaArrowUp, FaArrowDown } from "react-icons/fa";
+import ChartCard from "../../components/ChartCard";
+import StatCard from "../../components/StatCard";
 
 export default function AdminAnalyticsPage() {
+  /* ================= STATE ================= */
   const [loading, setLoading] = useState(true);
-
   const [orders, setOrders] = useState([]);
-  const [products, setProducts] = useState([]);
   const [users, setUsers] = useState([]);
+  const [products, setProducts] = useState([]);
   const [reviews, setReviews] = useState([]);
 
-  //Load Analytics Data
-  const loadAnalytics = async () => {
-    try {
-      const token = localStorage.getItem("token");
+  const API = import.meta.env.VITE_BACKEND_URL;
 
-      const [ordersRes, usersRes, productsRes, reviewsRes] = await Promise.all([
-        axios.get(`${import.meta.env.VITE_BACKEND_URL}/orders`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        axios.get(`${import.meta.env.VITE_BACKEND_URL}/users/all`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        axios.get(`${import.meta.env.VITE_BACKEND_URL}/products`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        axios.get(`${import.meta.env.VITE_BACKEND_URL}/reviews/all`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-      ]);
-
-      setOrders(ordersRes.data);
-      setUsers(usersRes.data);
-      setProducts(productsRes.data);
-      setReviews(reviewsRes.data.reviews);
-
-      setLoading(false);
-    } catch (e) {
-      console.error("Analytics Error:", e);
-      setLoading(false);
-    }
-  };
-
+  /* ================= LOAD DATA ================= */
   useEffect(() => {
-    loadAnalytics();
-  }, []);
+    const token = localStorage.getItem("token");
 
-  if (loading) return <Loader />;
+    (async () => {
+      try {
+        const [ordersRes, usersRes, productsRes, reviewsRes] =
+          await Promise.all([
+            axios.get(`${API}/orders`, {
+              headers: { Authorization: `Bearer ${token}` },
+            }),
+            axios.get(`${API}/users/all`, {
+              headers: { Authorization: `Bearer ${token}` },
+            }),
+            axios.get(`${API}/products`, {
+              headers: { Authorization: `Bearer ${token}` },
+            }),
+            axios.get(`${API}/reviews/all`, {
+              headers: { Authorization: `Bearer ${token}` },
+            }),
+          ]);
 
-  //Calculate Analytics Data
-  const ordersPerDay = {};
-  orders.forEach((o) => {
-    const date = new Date(o.date).toLocaleDateString();
-    ordersPerDay[date] = (ordersPerDay[date] || 0) + 1;
-  });
-  const ordersChart = Object.entries(ordersPerDay).map(([day, count]) => ({
-    day,
-    count,
-  }));
+        setOrders(ordersRes.data || []);
+        setUsers(usersRes.data || []);
+        setProducts(productsRes.data || []);
+        setReviews(reviewsRes.data?.reviews || []);
+      } catch (err) {
+        console.error("Analytics load failed:", err);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [API]);
 
-  // 2️ Revenue Per Day
-  const revenuePerDay = {};
-  orders.forEach((o) => {
-    const date = new Date(o.date).toLocaleDateString();
-    revenuePerDay[date] = (revenuePerDay[date] || 0) + o.total;
-  });
-  const revenueChart = Object.entries(revenuePerDay).map(([day, total]) => ({
-    day,
-    total,
-  }));
+  /* ================= CALCULATIONS ================= */
+  const ordersChart = useMemo(() => {
+    const map = {};
+    orders.forEach((o) => {
+      const day = new Date(o.date).toISOString().split("T")[0];
+      map[day] = (map[day] || 0) + 1;
+    });
+    return Object.entries(map).map(([day, count]) => ({ day, count }));
+  }, [orders]);
 
-  // 3️ Product Category Distribution
-  const categoryCount = {};
-  products.forEach((p) => {
-    const cat = p.category || "Uncategorized";
-    categoryCount[cat] = (categoryCount[cat] || 0) + 1;
-  });
+  const revenueChart = useMemo(() => {
+    const map = {};
+    orders.forEach((o) => {
+      const day = new Date(o.date).toISOString().split("T")[0];
+      map[day] = (map[day] || 0) + o.total;
+    });
+    return Object.entries(map).map(([day, total]) => ({ day, total }));
+  }, [orders]);
 
-  const categoryData = Object.entries(categoryCount).map(([name, value]) => ({
-    name,
-    value,
-  }));
+  const categoryData = useMemo(() => {
+    const map = {};
+    products.forEach((p) => {
+      const category = p.category || "Uncategorized";
+      map[category] = (map[category] || 0) + 1;
+    });
+    return Object.entries(map).map(([name, value]) => ({ name, value }));
+  }, [products]);
 
-  const COLORS = ["#FF8042", "#00C49F", "#0088FE", "#FFBB28", "#AF19FF"];
+  const totalRevenue = useMemo(
+    () => orders.reduce((sum, o) => sum + o.total, 0),
+    [orders]
+  );
 
-  // 4️ Key Performance Indicators (KPIs)
-  const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
+  const COLORS = ["#6366F1", "#EC4899", "#F59E0B", "#10B981", "#3B82F6"];
 
-  const today = new Date().toLocaleDateString();
-  const yesterday = new Date(Date.now() - 86400000).toLocaleDateString();
-
-  const todayOrders = orders.filter(
-    (o) => new Date(o.date).toLocaleDateString() === today
-  ).length;
-
-  const yesterdayOrders = orders.filter(
-    (o) => new Date(o.date).toLocaleDateString() === yesterday
-  ).length;
-
-  const orderTrendUp = todayOrders >= yesterdayOrders;
-
-  return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">
-        📊 Advanced Analytics Dashboard
-      </h1>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        <div className="p-5 bg-white rounded-xl shadow-lg">
-          <p className="text-gray-500">Total Revenue</p>
-          <h2 className="text-3xl font-bold mt-2">
-            Rs. {totalRevenue.toLocaleString()}
-          </h2>
-        </div>
-
-        <div className="p-5 bg-white rounded-xl shadow-lg">
-          <p className="text-gray-500">Total Orders</p>
-          <h2 className="text-3xl font-bold mt-2">{orders.length}</h2>
-          <div className="flex items-center gap-1 mt-2 text-sm">
-            {orderTrendUp ? (
-              <FaArrowUp className="text-green-600" />
-            ) : (
-              <FaArrowDown className="text-red-600" />
-            )}
-            <span>{orderTrendUp ? "Up Today" : "Down Today"}</span>
-          </div>
-        </div>
-
-        <div className="p-5 bg-white rounded-xl shadow-lg">
-          <p className="text-gray-500">Total Users</p>
-          <h2 className="text-3xl font-bold mt-2">{users.length}</h2>
-        </div>
-
-        <div className="p-5 bg-white rounded-xl shadow-lg">
-          <p className="text-gray-500">Total Reviews</p>
-          <h2 className="text-3xl font-bold mt-2">{reviews.length}</h2>
-        </div>
+  /* ================= LOADING ================= */
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="h-12 w-12 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
       </div>
+    );
+  }
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white p-6 rounded-xl shadow-lg">
-          <h3 className="text-xl font-semibold mb-3">📈 Orders Per Day</h3>
-          <LineChart width={500} height={250} data={ordersChart}>
-            <CartesianGrid stroke="#ccc" />
-            <XAxis dataKey="day" />
-            <YAxis />
-            <Tooltip />
-            <Line
-              type="monotone"
-              dataKey="count"
-              stroke="#0088FE"
-              strokeWidth={3}
-            />
-          </LineChart>
-        </div>
+  /* ================= UI ================= */
+  return (
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 px-6 py-8">
+      <div className="max-w-7xl mx-auto flex flex-col gap-10">
 
-        <div className="bg-white p-6 rounded-xl shadow-lg">
-          <h3 className="text-xl font-semibold mb-3">💰 Revenue Per Day</h3>
-          <BarChart width={500} height={250} data={revenueChart}>
-            <CartesianGrid stroke="#ccc" />
-            <XAxis dataKey="day" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="total" fill="#00C49F" />
-          </BarChart>
-        </div>
+        {/* HEADER */}
+        <section className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+          <h1 className="text-3xl font-bold text-gray-900">
+            Analytics Dashboard
+          </h1>
+          <p className="text-gray-600 mt-1">
+            Business performance overview
+          </p>
+        </section>
 
-        <div className="bg-white p-6 rounded-xl shadow-lg col-span-1 lg:col-span-2">
-          <h3 className="text-xl font-semibold mb-3">
-            📦 Product Category Breakdown
-          </h3>
-          <PieChart width={600} height={300}>
-            <Pie
-              data={categoryData}
-              dataKey="value"
-              nameKey="name"
-              outerRadius={120}
-              label
-            >
-              {categoryData.map((entry, index) => (
-                <Cell key={index} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Legend />
-            <Tooltip />
-          </PieChart>
-        </div>
+        {/* KPI CARDS (FLEX) */}
+        <section className="flex flex-wrap gap-6">
+          <StatCard
+            title="Revenue"
+            value={`Rs. ${totalRevenue.toLocaleString()}`}
+            tint="blue"
+            icon={<span className="text-xl">💰</span>}
+          />
+          <StatCard
+            title="Orders"
+            value={orders.length}
+            tint="amber"
+            icon={<span className="text-xl">📦</span>}
+          />
+          <StatCard
+            title="Users"
+            value={users.length}
+            tint="green"
+            icon={<span className="text-xl">👤</span>}
+          />
+          <StatCard
+            title="Reviews"
+            value={reviews.length}
+            tint="purple"
+            icon={<span className="text-xl">⭐</span>}
+          />
+        </section>
+
+        {/* CHARTS (FLEX COLUMN → ROW ON LARGE) */}
+        <section className="flex flex-col lg:flex-row gap-6">
+          <div className="flex-1">
+            <ChartCard title="Orders Per Day">
+              <ResponsiveContainer width="100%" height={260}>
+                <AreaChart data={ordersChart}>
+                  <CartesianGrid stroke="#E5E7EA" />
+                  <XAxis dataKey="day" />
+                  <YAxis />
+                  <Tooltip />
+                  <Area
+                    dataKey="count"
+                    stroke="#E5E7EB"
+                    fill="#6366F1"
+                    fillOpacity={0.25}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          </div>
+
+          <div className="flex-1">
+            <ChartCard title="Revenue Per Day">
+              <ResponsiveContainer width="100%" height={260}>
+                <BarChart data={revenueChart}>
+                  <CartesianGrid stroke="#E5E7EB" />
+                  <XAxis dataKey="day" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="total" fill="#10B981" radius={[6, 6, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          </div>
+        </section>
+
+        {/* CATEGORY */}
+        <section>
+          <ChartCard title="Product Categories">
+            <ResponsiveContainer width="100%" height={320}>
+              <PieChart>
+                <Pie data={categoryData} dataKey="value" outerRadius={120} label>
+                  {categoryData.map((_, i) => (
+                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Legend />
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </section>
+
       </div>
     </div>
   );

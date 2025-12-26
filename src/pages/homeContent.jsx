@@ -1167,12 +1167,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ============================
-          CATEGORY SECTION
-      ============================= */}
-      <section className="py-12 px-4 bg-gray-900">
+      {/*   CATEGORY SECTION */}
+      <section className="py-12 px-2 bg-gray-900">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-8">
+          <h2 className="text-2xl font-bold text-center mb-8">
             Shop by Category
           </h2>
 
@@ -1181,10 +1179,10 @@ export default function Home() {
               <Link
                 key={i}
                 to={`/products?category=${c.name.toLowerCase()}`}
-                className="p-6 bg-gray-800 rounded-lg border border-gray-700 hover:border-cyan-400 hover:bg-gray-700 cursor-pointer text-center transition focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                className="p-4 bg-gray-800 rounded-lg border border-gray-700 hover:border-cyan-400 hover:bg-gray-700 cursor-pointer text-center transition focus:outline-none focus:ring-2 focus:ring-cyan-400"
                 aria-label={`Browse ${c.name}`}
               >
-                <div className="text-4xl mb-2" aria-hidden="true">{c.icon}</div>
+                <div className="text-2xl mb-2" aria-hidden="true">{c.icon}</div>
                 <p className="text-gray-300 font-medium group-hover:text-cyan-400">{c.name}</p>
               </Link>
             ))}
@@ -1192,9 +1190,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ============================
-          TOP SELLING PRODUCTS
-      ============================= */}
+      {/*  TOP SELLING PRODUCTS*/}
       <section className="py-16 px-4 bg-gray-950">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-white mb-10">
@@ -1353,9 +1349,7 @@ export default function Home() {
           )}
         </div>
       </section>
-      {/* ============================
-          FOOTER
-      ============================= */}
+      {/*FOOTER*/}
       <Footer />
 
       

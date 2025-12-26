@@ -30,7 +30,7 @@ export default function Footer() {
             <div>
               <div className="flex items-center gap-4 mb-4">
                 <img src="/logo.png" className="w-14 h-14 object-contain" alt="logo" />
-                <span className="text-xl font-bold">Isuri Technologies</span>
+                <span className="text-xl font-bold">Isuru Technologies</span>
               </div>
 
               <p className="text-white/70 text-sm leading-relaxed">
