@@ -1,119 +1,112 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { FaStar } from "react-icons/fa";
+import { FiArrowRight } from "react-icons/fi";
+import { BsTruck } from "react-icons/bs";
 
-// ============================
-// ⭐ Star Rating Component
-// ============================
-function StarRating({ rating = 0, size = 16 }) {
-  const stars = [];
-  const full = Math.floor(rating);
-  const half = rating % 1 >= 0.5;
-
-  for (let i = 0; i < 5; i++) {
-    if (i < full) {
-      stars.push(<span key={i} style={{ fontSize: size, color: "#e29816" }}>★</span>);
-    } else if (i === full && half) {
-      stars.push(
-        <span key={i} style={{ position: "relative", display: "inline-block", fontSize: size }}>
-          <span style={{ color: "#ccc" }}>★</span>
-          <span style={{ color: "#e29816", position: "absolute", left: 0, width: "50%", overflow: "hidden" }}>★</span>
-        </span>
-      );
-    } else {
-      stars.push(<span key={i} style={{ fontSize: size, color: "#ccc" }}>★</span>);
-    }
-  }
-  return <div className="flex">{stars}</div>;
-}
-
-// ============================
-// ⭐ MAIN COMPONENT
-// ============================
 export default function ProductCard({ product }) {
-  // ⭐ NEW: State for rating + review count
-  const [averageRating, setAverageRating] = useState(0);
-  const [reviewCount, setReviewCount] = useState(0);
+  const rating = product.averageRating || 0;
+  const count = product.reviewCount || 0;
 
-  // ⭐ NEW: Fetch ratings from backend
-  useEffect(() => {
-    if (!product?.productID) return;
+  const price = Number(product.price || 0);
+  const labelledPrice = Number(product.labelledPrice || price);
 
-    axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/reviews/${product.productID}`)
-      .then((res) => {
-        const reviews = res.data.reviews || res.data || [];
+  const hasDiscount = labelledPrice > price;
 
-        if (reviews.length === 0) {
-          setAverageRating(0);
-          setReviewCount(0);
-          return;
-        }
+  const discount = hasDiscount
+    ? Math.round(((labelledPrice - price) / labelledPrice) * 100)
+    : 0;
 
-        // Calculate avg rating
-        const sum = reviews.reduce((acc, r) => acc + Number(r.rating || 0), 0);
-        const avg = sum / reviews.length;
-
-        setAverageRating(Number(avg.toFixed(1)));
-        setReviewCount(reviews.length);
-      })
-      .catch(() => {
-        setAverageRating(0);
-        setReviewCount(0);
-      });
-  }, [product?.productID]);
-
-  // 🔒 Safe product fields
-  const name = product?.name ?? "Unnamed Product";
-  const images = product?.images ?? [];
-  const mainImage = images[0] ?? "";
-  const secondaryImage = images[1] ?? mainImage;
-
-  const price = Number(product?.price ?? 0);
-  const labelledPrice = Number(product?.labelledPrice ?? price);
-
-  const discount =
-    labelledPrice > price
-      ? Math.round(((labelledPrice - price) / labelledPrice) * 100)
-      : 0;
+  const label = product.label || product.badge || product.tag || null;
+  const freeShipping = product.freeShipping === true;
 
   return (
     <Link
-      to={`/overview/${product?.productID}`}
-      className="w-full sm:w-[300px] shadow-lg hover:shadow-2xl rounded-lg overflow-hidden bg-white transition"
+      to={`/overview/${product.productID}`}
+      className="block w-[300px] bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100"
     >
       {/* IMAGE */}
-      <div className="w-full h-[200px] sm:h-[250px] relative">
-        <img src={secondaryImage} className="absolute w-full h-full object-cover" />
-        <img src={mainImage} className="absolute w-full h-full object-cover primary-image transition-opacity duration-500" />
+      <div className="relative overflow-hidden h-[280px] bg-gray-50">
+        <img
+          src={product.images?.[0]}
+          alt={product.name}
+          className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+        />
 
-        {discount > 0 && (
-          <div className="absolute top-2 right-2 bg-gold text-white px-2 py-1 rounded-full text-xs font-bold">
-            {discount}% OFF
+        {/* DISCOUNT */}
+        {hasDiscount && (
+          <div className="absolute top-4 right-4 bg-gold text-white px-3 py-1.5 rounded-full font-bold text-sm shadow-lg">
+            -{discount}%
           </div>
         )}
+
+        {/* PRODUCT LABEL */}
+        {label && (
+          <div className="absolute top-4 left-4 bg-accent text-white px-3 py-1.5 rounded-full font-semibold text-xs uppercase shadow-lg">
+            {label}
+          </div>
+        )}
+
+        {/* FREE SHIPPING BADGE */}
+        {freeShipping && (
+          <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-green-600 text-white px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg">
+            <BsTruck className="text-sm" />
+            Free Shipping
+          </div>
+        )}
+
+        {/* HOVER OVERLAY */}
+        <div
+          className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300"
+          style={{
+            background:
+              "linear-gradient(to top, rgba(17, 24, 39, 0.3), transparent)",
+          }}
+        />
       </div>
 
-      {/* DETAILS */}
-      <div className="p-4 flex flex-col gap-3">
-        <h1 className="text-center text-lg font-medium line-clamp-2">{name}</h1>
+      {/* CONTENT */}
+      <div className="p-5">
+        <h2 className="text-lg font-semibold line-clamp-2 min-h-14 mb-3 text-gray-900">
+          {product.name}
+        </h2>
 
-        {/* ⭐ RATING DISPLAY FROM BACKEND */}
-        <div className="flex items-center justify-center gap-2">
-          <StarRating rating={averageRating} size={16} />
-          <span className="text-xs text-gray-500">
-            {averageRating > 0 ? `${averageRating} (${reviewCount})` : "No ratings"}
+        {/* RATING */}
+        <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center gap-1">
+            {[...Array(5)].map((_, i) => (
+              <FaStar
+                key={i}
+                size={16}
+                color={i < Math.round(rating) ? "#e29816" : "#d1d5db"}
+              />
+            ))}
+          </div>
+
+          <span className="text-sm text-gray-500 font-medium">
+            {count > 0 ? `${rating.toFixed(1)} (${count})` : "No reviews"}
           </span>
         </div>
 
         {/* PRICE */}
-        <div className="text-center">
-          {discount > 0 && (
-            <p className="line-through text-sm text-gray-500">
-              LKR {labelledPrice.toFixed(2)}
+        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+          <div className="flex flex-col">
+            {hasDiscount && (
+              <p className="text-sm text-gray-400 line-through">
+                LKR {labelledPrice.toFixed(2)}
+              </p>
+            )}
+
+            <p className="text-2xl font-bold text-gray-900">
+              LKR {price.toFixed(2)}
             </p>
-          )}
-          <p className="text-xl font-bold text-accent">LKR {price.toFixed(2)}</p>
+          </div>
+
+          <button
+            className="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-white hover:opacity-90 transition-opacity"
+            aria-label="View product"
+          >
+            <FiArrowRight size={20} />
+          </button>
         </div>
       </div>
     </Link>

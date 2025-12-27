@@ -1,116 +1,178 @@
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
-import toast from "react-hot-toast";
+import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 
-export default function ProductReviewPage() {
-  const { state } = useLocation();
-  const navigate = useNavigate();
-
-  const productId = state?.productId;
-
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  // Fetch all reviews for this product
-  useEffect(() => {
-    if (!productId) return;
-
-    axios
-      .get(import.meta.env.VITE_BACKEND_URL + "/reviews/" + productId)
-      .then((res) => {
-        setReviews(res.data.reviews || []);
-        setLoading(false);
-      })
-      .catch(() => {
-        toast.error("Failed to load reviews");
-        setLoading(false);
-      });
-  }, [productId]);
-
-  if (!productId) {
-    return (
-      <div className="p-10 text-center text-red-600 font-bold">
-        Error: Product ID missing
-      </div>
-    );
-  }
-
+export default function ProductReviews({
+  reviews = [],
+  histogram = [0, 0, 0, 0, 0],
+  averageRating = 0,
+  sortBy,
+  setSortBy,
+  votedReviews = {},
+  handleVote = () => {},
+  paginated = [],
+  loadMore = () => {},
+}) {
   return (
-    <div className="max-w-3xl mx-auto p-6">
+    <div className="bg-white/70 backdrop-blur rounded-3xl shadow-xl p-10 border border-white/30 mt-16">
 
-      {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Customer Reviews</h1>
+      <h2 className="text-3xl font-bold text-center mb-10">Customer Reviews</h2>
 
-        <button
-          onClick={() =>
-            navigate("/write-review", { state: { productId } })
-          }
-          className="bg-black text-white px-4 py-2 rounded-xl hover:bg-gray-900"
-        >
-          Write a Review
-        </button>
-      </div>
+      {/* ---------- SUMMARY SECTION ---------- */}
+      <div className="grid md:grid-cols-3 gap-10 mb-10">
 
-      {/* Loading */}
-      {loading && (
-        <p className="text-center text-gray-600">Loading reviews...</p>
-      )}
+        {/* Average Rating */}
+        <div className="flex flex-col items-center">
+          <span className="text-6xl font-bold text-yellow-500">
+            {averageRating.toFixed(1)}
+          </span>
 
-      {/* No Reviews */}
-      {!loading && reviews.length === 0 && (
-        <p className="text-center text-gray-600">No reviews yet.</p>
-      )}
-
-      {/* Reviews List */}
-      <div className="space-y-4">
-        {reviews.map((review) => (
-          <div
-            key={review._id}
-            className="p-4 border rounded-xl bg-white shadow"
-          >
-            {/* Rating */}
-            <div>
-              <span className="text-yellow-500 text-xl">
-                {"⭐".repeat(review.rating)}
-              </span>
-            </div>
-
-            {/* Title */}
-            <h2 className="text-lg font-semibold mt-1">
-              {review.title}
-            </h2>
-
-            {/* Content */}
-            <p className="text-gray-700 mt-1">
-              {review.content}
-            </p>
-
-            {/* Verified */}
-            {review.verified && (
-              <p className="text-green-600 text-sm font-semibold mt-1">
-                ✔ Verified Buyer
-              </p>
+          <div className="flex items-center mt-2">
+            {[1, 2, 3, 4, 5].map((s) =>
+              s <= Math.round(averageRating) ? (
+                <AiFillStar key={s} className="text-yellow-400" size={28} />
+              ) : (
+                <AiOutlineStar key={s} className="text-gray-300" size={28} />
+              )
             )}
-
-            {/* Name + Date */}
-            <p className="text-sm text-gray-500 mt-3">
-              By <span className="font-semibold">{review.name}</span> •{" "}
-              {new Date(review.date || review.createdAt).toLocaleDateString()}
-            </p>
           </div>
-        ))}
+
+          <p className="text-gray-600 mt-2">
+            Based on {reviews.length} reviews
+          </p>
+        </div>
+
+        {/* ---------- HISTOGRAM ---------- */}
+        <div className="md:col-span-2 flex flex-col justify-center">
+          {[5, 4, 3, 2, 1].map((star) => {
+            const count = histogram[star - 1] || 0;
+            const pct =
+              reviews.length > 0 ? Math.round((count / reviews.length) * 100) : 0;
+
+            return (
+              <div
+                key={star}
+                className="flex items-center gap-3 text-sm mb-2"
+              >
+                <span className="w-10 font-medium">{star}★</span>
+
+                {/* REDUCED WIDTH BAR */}
+                <div className="w-40 bg-gray-200 rounded-full h-3 overflow-hidden">
+                  <div
+                    className="h-3 bg-yellow-400 transition-all"
+                    style={{ width: `${pct}%` }}
+                  ></div>
+                </div>
+
+                <span className="w-10 text-right text-gray-600">{count}</span>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Back Button */}
-      <button
-        onClick={() => navigate(-1)}
-        className="mt-6 w-full border-2 border-black py-2 rounded-xl font-semibold hover:bg-black hover:text-white transition"
-      >
-        Back
-      </button>
+      {/* ---------- SORT BAR ---------- */}
+      <div className="flex justify-between items-center mb-10">
+        <h3 className="text-2xl font-bold">All Reviews</h3>
 
+        <select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+          className="px-4 py-2 border rounded-xl shadow-sm bg-white"
+        >
+          <option value="newest">Newest</option>
+          <option value="highest">Highest Rated</option>
+          <option value="lowest">Lowest Rated</option>
+        </select>
+      </div>
+
+      {/* ---------- REVIEW LIST ---------- */}
+      <div className="space-y-6">
+        {paginated.length === 0 && (
+          <p className="text-center text-gray-500 text-lg">
+            No reviews yet. Be the first to review!
+          </p>
+        )}
+
+        {paginated.map((review) => {
+          const rating = Number(review.rating) || 0;
+          const voted = votedReviews[review._id] || false;
+
+          return (
+            <div
+              key={review._id}
+              className="bg-white rounded-2xl shadow p-6 border border-gray-100 hover:shadow-lg transition"
+            >
+              {/* Stars */}
+              <div className="flex gap-1">
+                {[1, 2, 3, 4, 5].map((n) =>
+                  n <= rating ? (
+                    <AiFillStar key={n} className="text-yellow-400" size={20} />
+                  ) : (
+                    <AiOutlineStar key={n} className="text-gray-300" size={20} />
+                  )
+                )}
+              </div>
+
+              {/* Title */}
+              <h3 className="text-xl font-semibold mt-2">{review.title}</h3>
+
+              {/* Content */}
+              <p className="text-gray-700 mt-2">{review.content}</p>
+
+              {/* Verified Buyer */}
+              {review.verified && (
+                <div className="mt-3 inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">
+                  ✔ Verified Buyer
+                </div>
+              )}
+
+              {/* Metadata */}
+              <p className="text-sm text-gray-500 mt-3">
+                By <span className="font-semibold">{review.name}</span> •{" "}
+                {new Date(review.createdAt || review.date).toLocaleDateString()}
+              </p>
+
+              {/* VOTE BUTTONS */}
+              <div className="flex gap-3 mt-4">
+                <button
+                  onClick={() => handleVote(review._id, "helpful")}
+                  disabled={voted}
+                  className={`px-4 py-1 rounded-xl border text-sm font-medium ${
+                    voted
+                      ? "bg-gray-200 text-gray-500"
+                      : "bg-green-100 text-green-700 hover:bg-green-200"
+                  }`}
+                >
+                  👍 Helpful ({review.helpful || 0})
+                </button>
+
+                <button
+                  onClick={() => handleVote(review._id, "notHelpful")}
+                  disabled={voted}
+                  className={`px-4 py-1 rounded-xl border text-sm font-medium ${
+                    voted
+                      ? "bg-gray-200 text-gray-500"
+                      : "bg-red-100 text-red-700 hover:bg-red-200"
+                  }`}
+                >
+                  👎 Not Helpful ({review.notHelpful || 0})
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ---------- LOAD MORE ---------- */}
+      {paginated.length < reviews.length && (
+        <div className="text-center mt-12">
+          <button
+            onClick={loadMore}
+            className="px-8 py-3 bg-blue-600 text-white font-bold rounded-xl shadow hover:bg-blue-700 transition"
+          >
+            Load More Reviews
+          </button>
+        </div>
+      )}
     </div>
   );
 }
