@@ -1081,7 +1081,7 @@ export default function Home() {
 
                               <Link
                                 to={`/overview/${product.productID}`}
-                                className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${
+                                className={`px-5 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-all ${
                                   isActive
                                     ? "bg-cyan-400 text-black hover:scale-105"
                                     : "bg-gray-700 text-gray-400 cursor-not-allowed pointer-events-none"
