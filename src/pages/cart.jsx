@@ -2,11 +2,13 @@ import { useState } from "react";
 import { getCart,addToCart,getCartTotal } from "../utils/cart";
 import { BsChevronUp } from "react-icons/bs";
 import { Link } from "react-router-dom";
+import Footer from "../components/Footer";
 
 export default function CartPage() {
   const [cart, setCart] = useState(getCart());
 
   return (
+    <>
     <div className="w-full flex flex-col items-center p-5">
       {cart.map((item, index) => (
         <div
@@ -99,6 +101,9 @@ export default function CartPage() {
           LKR. {getCartTotal().toFixed(2)}
         </span>
       </div>
+  
     </div>
+    <Footer />
+    </>
   );
 }
