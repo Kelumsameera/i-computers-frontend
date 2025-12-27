@@ -1190,7 +1190,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/*  TOP SELLING PRODUCTS*/}
+      
       <section className="py-16 px-4 bg-gray-950">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-white mb-10">
