@@ -10,7 +10,7 @@ import OrdersPage from "./ordersPage";
 import AboutPage from "./aboutPage";
 import ContactPage from "./ContactPage";
 
-import ReviewForm from "../components/ReviewForm";
+import ReviewForm from "../components/ReviewForm.jsx";
 
 export default function HomePage() {
   return (
