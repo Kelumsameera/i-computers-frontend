@@ -11,6 +11,7 @@ import { addToCart } from "../utils/cart";
 import SimilarProductCard from "../components/smillerProduct";
 import { CiSquareChevLeft, CiSquareChevRight } from "react-icons/ci";
 import uploadMedia from "../utils/uploadMedia";
+import Footer from "../components/Footer";
 
 export default function ProductOverview() {
   const navigate = useNavigate();
@@ -668,6 +669,9 @@ export default function ProductOverview() {
           )}
         </div>
       )}
+      <div>
+        <Footer />
+      </div>
     </div>
   );
 }
