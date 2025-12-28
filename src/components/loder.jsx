@@ -68,45 +68,85 @@ import { Monitor, Gamepad2 } from "lucide-react";
 
 export default function Loader() {
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-900 via-orange-900/20 to-gray-900 flex items-center justify-center overflow-hidden">
+    <div className="min-h-screen relative bg-black/70 backdrop-blur-2xl flex items-center justify-center overflow-hidden">
       <style>{`
-        @keyframes gridMove {
-          0% { transform: translate(0, 0); }
-          100% { transform: translate(50px, 50px); }
-        }
         @keyframes float {
           0%,100% { transform: translateY(0); }
-          50% { transform: translateY(-20px); }
+          50% { transform: translateY(-18px); }
         }
         @keyframes glow {
-          0%,100% { box-shadow: 0 0 20px rgba(249,115,22,.5); }
-          50% { box-shadow: 0 0 60px rgba(249,115,22,.8); }
+          0%,100% {
+            box-shadow:
+              0 0 20px rgba(0,255,255,.6),
+              0 0 40px rgba(168,85,247,.4);
+          }
+          50% {
+            box-shadow:
+              0 0 50px rgba(0,255,255,.9),
+              0 0 90px rgba(168,85,247,.8);
+          }
+        }
+        @keyframes pulseText {
+          0%,100% { opacity: .6; }
+          50% { opacity: 1; }
+        }
+        @keyframes gridMove {
+          0% { background-position: 0 0; }
+          100% { background-position: 120px 120px; }
         }
       `}</style>
 
-      <div className="relative text-center">
+      {/* Cyber Grid Background */}
+      <div
+        className="absolute inset-0 opacity-20"
+        style={{
+          backgroundImage: `
+            linear-gradient(to right, rgba(0,255,255,.15) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(168,85,247,.15) 1px, transparent 1px)
+          `,
+          backgroundSize: "60px 60px",
+          animation: "gridMove 20s linear infinite",
+        }}
+      />
+
+      {/* Glow Orbs */}
+      <div className="absolute w-96 h-96 bg-cyan-500/20 blur-3xl rounded-full -top-20 -left-20" />
+      <div className="absolute w-96 h-96 bg-fuchsia-600/20 blur-3xl rounded-full bottom-0 right-0" />
+
+      <div className="relative text-center z-10">
+        {/* Loader Core */}
         <div className="w-40 h-40 mx-auto relative animate-float">
-          <div className="absolute inset-0 border-4 border-orange-500/30 border-t-orange-500 rounded-full animate-spin" />
+          <div className="absolute inset-0 rounded-full border-4 border-cyan-400/30 border-t-fuchsia-500 animate-spin" />
+
           <div
-            className="absolute inset-4 rounded-full bg-black/80 border-2 border-orange-600"
+            className="absolute inset-4 rounded-full bg-black/80 border-2 border-cyan-400"
             style={{ animation: "glow 2s infinite" }}
           />
-          <div className="absolute inset-0 flex items-center justify-center text-5xl font-bold text-orange-400">
-            <img src="/logo.png" alt="Logo" className="w-16 h-16" />
+
+          <div className="absolute inset-0 flex items-center justify-center">
+            <img src="/logo.png" alt="Logo" className="w-16 h-16 drop-shadow-[0_0_20px_cyan]" />
           </div>
         </div>
 
-        <h2 className="text-2xl font-bold mt-6">ISURU COMPUTER</h2>
-        <p className="text-orange-400 text-sm tracking-widest">
+        {/* Brand */}
+        <h2 className="text-2xl font-bold mt-6 text-cyan-400 drop-shadow-[0_0_12px_cyan]">
+          ISURU COMPUTER
+        </h2>
+
+        <p className="text-fuchsia-400 text-sm tracking-widest animate-pulseText">
           GAMING SYSTEMS & PERIPHERALS
         </p>
 
-        <div className="flex justify-center gap-3 mt-4">
-          <Monitor className="text-orange-400 animate-bounce" />
-          <Gamepad2 className="text-yellow-400 animate-bounce delay-150" />
+        {/* Icons */}
+        <div className="flex justify-center gap-4 mt-5">
+          <Monitor className="text-cyan-400 animate-bounce drop-shadow-[0_0_10px_cyan]" />
+          <Gamepad2 className="text-fuchsia-500 animate-bounce delay-150 drop-shadow-[0_0_10px_fuchsia]" />
         </div>
 
-        <p className="text-white text-sm mt-4">Loading your gaming paradise...</p>
+        {/* Loading Text */}
+        <p className="text-white/80 text-sm mt-4 tracking-wider animate-pulseText">
+         Loading your gaming paradise...
+        </p>
       </div>
     </div>
   );

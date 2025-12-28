@@ -67,10 +67,10 @@ export default function UserData({ compact = false }) {
 
       {/* DROPDOWN */}
       {open && (
-        <div className="absolute right-0 mt-2 bg-gray-800 border border-gray-700 rounded-lg w-40 z-50">
+        <div className="absolute left-0 mt-2 bg-gray-800 border border-gray-700 rounded-lg w-40 z-50">
           <button
             onClick={() => navigate("/orders")}
-            className="w-full text-left px-4 py-2 hover:bg-white/15 text-gray-300 font-semibold"
+            className="w-full text-left px-4 py-2 hover:bg-white/15 text-gray-300 lg:font-semibold"
           >
             My Orders
           </button>
@@ -79,7 +79,7 @@ export default function UserData({ compact = false }) {
               localStorage.removeItem("token");
               navigate("/login");
             }}
-            className="w-full text-left px-4 py-2 text-red-400 hover:bg-gray-700 font-semibold"
+            className="w-full text-left px-4 py-2 text-red-400 hover:bg-gray-700 lg:font-semibold"
           >
             Logout
           </button>
