@@ -2,7 +2,7 @@
 import axios from "axios";
 import { useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Loader from "../components/loder";
 import ImageSlider from "../components/imageSlider";
 import StarRating from "../components/StarRating";
@@ -187,15 +187,17 @@ export default function ProductOverview() {
               {/* Mobile Header */}
               <div className="lg:hidden space-y-4">
                 <div className="flex items-center gap-2 text-sm text-secondary/60">
-                  <span className="hover:text-accent cursor-pointer transition-colors">Home</span>
+                  <Link to="/" className="hover:text-accent cursor-pointer transition-colors">Home</Link>
+                  <CgChevronRight className="text-xs" />
+                  <Link to="/products" className="hover:text-accent cursor-pointer transition-colors">Products</Link>
                   <CgChevronRight className="text-xs" />
                   <span className="hover:text-accent cursor-pointer transition-colors">
                     {product.category}
                   </span>
                   <CgChevronRight className="text-xs" />
-                  <span className="text-secondary/90">{product.name}</span>
+                  <Link to={`/overview/${product.productID}`} className="text-secondary/90">{product.name}</Link>
                   <CgChevronRight className="text-xs" />
-                  <span className="text-secondary/90">{product.productID}</span>
+                  <Link to={`/overview/${product.productID}`} className="text-secondary/90">{product.productID}</Link>
                 </div>
 
                 <h1 className="text-3xl font-bold text-secondary leading-tight">
