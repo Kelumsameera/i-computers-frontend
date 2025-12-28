@@ -11,6 +11,10 @@ import AboutPage from "./aboutPage";
 import ContactPage from "./ContactPage";
 
 import ReviewForm from "../components/ReviewForm.jsx";
+import TermsAndConditions from "../support/termsAndConditionsPage.jsx";
+import PrivacyPolicy from "../support/privacyPolicyPage.jsx";
+import RefundPolicy from "../support/refundPolicyPage.jsx";
+import FAQPage from "../support/fAQPage.jsx";
 
 export default function HomePage() {
   return (
@@ -28,6 +32,10 @@ export default function HomePage() {
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/refund-policy" element={<RefundPolicy />} />
+          <Route path="/faq" element={<FAQPage />} />
           <Route path="*" element={<h1>Page not found</h1>} />
         </Routes>
       </div>

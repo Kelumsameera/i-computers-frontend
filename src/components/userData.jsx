@@ -1,10 +1,12 @@
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { FaUserPlus } from "react-icons/fa";
 
 export default function UserData({ compact = false }) {
   const [user, setUser] = useState(null);
-  const [selectedOption, setSelectedOption] = useState("user");
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -18,60 +20,71 @@ export default function UserData({ compact = false }) {
       .catch(() => setUser(null));
   }, []);
 
+  // 🔹 NOT LOGGED IN
   if (!user) {
     return (
-      <div className="flex gap-2">
-        <Link to="/login" className="px-3 py-1.5 bg-white text-accent rounded-full text-sm">
-          Login
-        </Link>
-        <Link to="/register" className="px-3 py-1.5 bg-white text-accent rounded-full text-sm">
-          Register
-        </Link>
+      <div className="relative">
+        {/* USER ICON */}
+        <FaUserPlus
+          onClick={() => setOpen(!open)}
+          className="text-gold text-2xl cursor-pointer"
+        />
+
+        {/* LOGIN / REGISTER MENU */}
+        {open && (
+          <div className="absolute right-0 mt-2 bg-white border border-gray-700 rounded-lg p-3 z-50">
+            <Link
+              to="/login"
+              className="block px-3 py-2 text-sm hover:bg-gray-700 rounded"
+            >
+              Login
+            </Link>
+            <Link
+              to="/register"
+              className="block px-3 py-2 text-sm hover:bg-gray-700 rounded"
+            >
+              Register
+            </Link>
+          </div>
+        )}
       </div>
     );
   }
 
+  // 🔹 LOGGED IN
   return (
-    <div
-      className={`flex items-center gap-2 ${
-        compact ? "w-auto" : "w-40"
-      }`}
-    >
+    <div className="relative">
+      {/* USER IMAGE */}
       <img
         src={user.image}
         referrerPolicy="no-referrer"
         alt="user"
-        className={`rounded-full object-cover ${
-          compact ? "w-8 h-8" : "w-11 h-11"
+        onClick={() => setOpen(!open)}
+        className={`rounded-full object-cover border border-cyan-400 cursor-pointer ${
+          compact ? "w-8 h-8" : "w-10 h-10"
         }`}
       />
 
-      <select
-        value={selectedOption}
-        onChange={(e) => {
-          if (e.target.value === "logout") {
-            localStorage.removeItem("token");
-            window.location.href = "/login";
-          }
-          if (e.target.value === "my-orders") {
-            window.location.href = "/orders";
-          }
-          setSelectedOption("user");
-        }}
-        className={`bg-transparent outline-none cursor-pointer text-white ${
-          compact ? "text-sm" : ""
-        }`}
-      >
-        <option className="bg-accent" value="user">
-          {user.firstName}
-        </option>
-        <option className="bg-accent" value="my-orders">
-          My Orders
-        </option>
-        <option className="bg-accent" value="logout">
-          Logout
-        </option>
-      </select>
+      {/* DROPDOWN */}
+      {open && (
+        <div className="absolute right-0 mt-2 bg-gray-800 border border-gray-700 rounded-lg w-40 z-50">
+          <button
+            onClick={() => navigate("/orders")}
+            className="w-full text-left px-4 py-2 hover:bg-white/15 text-gray-300 font-semibold"
+          >
+            My Orders
+          </button>
+          <button
+            onClick={() => {
+              localStorage.removeItem("token");
+              navigate("/login");
+            }}
+            className="w-full text-left px-4 py-2 text-red-400 hover:bg-gray-700 font-semibold"
+          >
+            Logout
+          </button>
+        </div>
+      )}
     </div>
   );
 }

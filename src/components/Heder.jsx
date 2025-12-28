@@ -1,12 +1,16 @@
 import { LucideListCollapse } from "lucide-react";
 import { Link } from "react-router-dom";
-import { BiShoppingBag } from "react-icons/bi";
+
 import { RiPlayList2Fill } from "react-icons/ri";
 import { useState } from "react";
 import UserData from "./userData";
+import { FiShoppingCart } from "react-icons/fi";
+import { FaUserPlus } from "react-icons/fa";
 
 export default function Header() {
   const [sideBarOpen, setSideBarOpen] = useState(false);
+ 
+
 
   return (
     <header className="w-full h-[100px] bg-gray-900 border-b border-gray-800 flex sticky top-0 z-50">
@@ -32,13 +36,18 @@ export default function Header() {
       <div className="absolute right-24 top-0 h-full hidden lg:flex items-center">
         <UserData />
       </div>
+      <div className="absolute right-14 top-1/2 -translate-y-1/2 lg:hidden">
+  <UserData compact />
+</div>
+
+ 
 
       {/* CART ICON */}
       <Link
         to="/cart"
         className="absolute right-6 top-1/2 -translate-y-1/2 text-gold text-2xl"
       >
-        <BiShoppingBag />
+        <FiShoppingCart />
       </Link>
 
       {/* MOBILE SIDEBAR */}
