@@ -18,7 +18,7 @@ export default function LoginPage() {
 			axios.post(import.meta.env.VITE_BACKEND_URL + "/users/google-login", {
 				token: response.access_token,
 			}).then((res) => {
-				// Use sessionStorage instead of localStorage
+				// Use localStorage
 				localStorage.setItem("token", res.data.token);
 				if (res.data.role === "admin") {
 					navigate("/admin");
@@ -57,7 +57,7 @@ export default function LoginPage() {
 				}
 			);
 
-			// Use sessionStorage instead of localStorage
+			// Use localStorage
 			localStorage.setItem("token", res.data.token);
 			
 			if (res.data.role === "admin") {

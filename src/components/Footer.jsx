@@ -87,17 +87,17 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/privacy" className="hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">
+                  <Link to="/privacy-policy" className="hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">
                     → Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link to="/returns" className="hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">
-                    → Return Policy
+                  <Link to="/refund-policy" className="hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">
+                    → Refund Policy
                   </Link>
                 </li>
                 <li>
-                  <Link to="/terms" className="hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">
+                  <Link to="/terms-and-conditions" className="hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">
                     → Terms & Conditions
                   </Link>
                 </li>
