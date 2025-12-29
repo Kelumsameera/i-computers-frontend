@@ -196,21 +196,24 @@ export default function AdminUpdateProductPage() {
                         ]}
                     />
 
-                    {/* Buttons */}
-                    <Link
-                        to="/admin/products"
-                        className="w-[49%] h-[50px] bg-red-500 text-white font-bold rounded-2xl flex justify-center items-center hover:bg-red-700 mt-5"
-                    >
-                        Cancel
-                    </Link>
+                                        {/* Buttons */}
+                    <div className="w-full flex justify-between items-center mt-5">
+                        <Link
+                            to="/admin/products"
+                            className="w-[49%] h-[50px] bg-red-500 text-white font-bold rounded-2xl flex justify-center items-center hover:bg-red-700"
+                        >
+                            Cancel
+                        </Link>
 
-                    <button
-                        onClick={updateProduct}
-                        disabled={loading}
-                        className="w-[49%] h-[50px] bg-accent text-white font-bold rounded-2xl hover:bg-transparent hover:text-accent border-2 border-accent mt-5"
-                    >
-                        {loading ? "Updating..." : "Update Product"}
-                    </button>
+                        <button
+                            onClick={updateProduct}
+                            disabled={loading}
+                            className="w-[49%] h-[50px] bg-accent text-white font-bold rounded-2xl hover:bg-transparent hover:text-accent border-2 border-accent"
+                        >
+                            {loading ? "Updating..." : "Update Product"}
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </div>

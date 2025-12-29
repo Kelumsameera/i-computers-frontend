@@ -254,19 +254,22 @@ export default function AdminAddProductPage() {
           </div>
 
           {/* Buttons */}
-          <Link
-            to="/admin/products"
-            className="w-[49%] h-[50px] mt-5 bg-red-500 text-white font-bold rounded-2xl flex justify-center items-center border-2 border-red-500 shadow-md hover:bg-transparent hover:text-red-500 transition-all duration-300"
-          >
-            Cancel
-          </Link>
+          <div className="w-full flex justify-between items-center mt-5">
+            <Link
+              to="/admin/products"
+              className="w-[49%] h-[50px] bg-red-500 text-white font-bold rounded-2xl flex justify-center items-center border-2 border-red-500 shadow-md hover:bg-transparent hover:text-red-500 transition-all duration-300"
+            >
+              Cancel
+            </Link>
 
-          <button
-            onClick={addProduct}
-            className="w-[49%] h-[50px] bg-accent text-white font-bold rounded-2xl hover:bg-transparent hover:text-accent border-2 border-accent mt-5"
-          >
-            Add Product
-          </button>
+            <button
+              onClick={addProduct}
+              className="w-[49%] h-[50px] bg-accent text-white font-bold rounded-2xl hover:bg-transparent hover:text-accent border-2 border-accent"
+            >
+              Add Product
+            </button>
+          </div>
+
         </div>
       </div>
     </div>
