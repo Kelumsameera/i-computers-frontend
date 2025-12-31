@@ -218,9 +218,13 @@ export default function PrivacyPolicy() {
             ))}
           </div>
 
-          {/* FOOTER */}
-          <Footer />
+          
         </div>
+        <div className="pt-20">
+           {/* FOOTER */}
+          <Footer  />
+        </div>
+       
       </div>
 
       {/* COOKIE BANNER */}
@@ -243,6 +247,7 @@ export default function PrivacyPolicy() {
               </button>
             </div>
           </div>
+          
         </div>
       )}
     </>
