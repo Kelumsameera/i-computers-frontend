@@ -194,8 +194,8 @@ export default function ProductOverview() {
                   <span className="hover:text-accent cursor-pointer transition-colors">
                     {product.category}
                   </span>
-                  <CgChevronRight className="text-xs" />
-                  <Link to={`/overview/${product.productID}`} className="text-secondary/90">{product.name}</Link>
+                  <CgChevronRight className="hidden lg:block text-xs" />
+                  <Link to={`/overview/${product.productID}`} className="hidden lg:block text-secondary/90">{product.name}</Link>
                   <CgChevronRight className="text-xs" />
                   <Link to={`/overview/${product.productID}`} className="text-secondary/90">{product.productID}</Link>
                 </div>

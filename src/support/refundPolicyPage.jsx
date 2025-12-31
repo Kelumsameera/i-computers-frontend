@@ -254,9 +254,12 @@ export default function RefundPolicy() {
             ))}
           </div>
 
-          {/* Footer */}
-          <Footer />
+         
         </div>
+        <div className="pt-20 bottom-0">
+                    {/* FOOTER */}
+                   <Footer  />
+                 </div>
       </div>
 
       {/* Cookie Consent Banner */}

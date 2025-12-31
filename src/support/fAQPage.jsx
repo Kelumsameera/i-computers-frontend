@@ -172,9 +172,12 @@ export default function FAQPage() {
           ))}
         </div>
 
-        {/* FOOTER */}
-        <Footer />
+       
       </div>
+      <div className="pt-20">
+                    {/* FOOTER */}
+                   <Footer  />
+                 </div>
     </div>
   );
 }

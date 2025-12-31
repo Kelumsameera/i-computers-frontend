@@ -42,7 +42,7 @@ export default function Footer() {
                   <FaPhoneAlt className="text-gold" /> +94 704 685 300
                 </p>
                 <p className="flex items-center gap-3 hover:text-gold transition-colors cursor-pointer">
-                  <FaEnvelope className="text-gold" /> support@isuritech.com
+                  <FaEnvelope className="text-gold" /> support@isurutech.com
                 </p>
                 <p className="flex items-center gap-3 hover:text-gold transition-colors cursor-pointer">
                   <FaMapMarkerAlt className="text-gold" /> Colombo, Sri Lanka
