@@ -2,10 +2,10 @@ import { Link, Route, Routes } from "react-router-dom";
 import { LuBoxes, LuClipboardList } from "react-icons/lu";
 import { RxDashboard } from "react-icons/rx";
 import { FiUsers } from "react-icons/fi";
-import { MdOutlineRateReview } from "react-icons/md";
+import { MdOutlineInventory, MdOutlineRateReview } from "react-icons/md";
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import { TbDeviceAnalytics, TbDeviceDesktopAnalytics } from "react-icons/tb";
 import Loader from "../components/loder";
 
 import AdminProductsPage from "./admin/adminProductsPage";
@@ -16,6 +16,8 @@ import AdminUsersPage from "./admin/adminUsersPage";
 import AdminReviewsPage from "./admin/adminReviewsPage";
 import AdminDashboardPage from "./admin/adminDashboardPage";
 import AdminAnalyticsPage from "./admin/AdminAnalyticsPage";
+import InventoryManagement from "./admin/adminInventoryManagementPage";
+import InventoryManagementPage from "./admin/adminInventoryManagementPage";
 
 export default function AdminPage() {
   const [user, setUser] = useState(null);
@@ -59,28 +61,31 @@ export default function AdminPage() {
         <nav className="flex flex-col justify-center flex-1 gap-1 px-2 text-lg">
           <div className="w-full h-[400px] text-white text-2xl flex flex-col pl-5 pt-5">
 
-            <Link to="/admin" className="w-full flex items-center h-[50px] gap-2.5">
+            <Link to="/admin" className="w-full flex items-center h-[50px] gap-2.5 cursor-pointer hover:text-cyan-500 transition-colors duration-300">
               <RxDashboard /> Dashboard
             </Link>
 
-            <Link to="/admin/analytics" className="w-full flex items-center h-[50px] gap-2.5">
-              <RxDashboard /> Analytics
+            <Link to="/admin/analytics" className="w-full flex items-center h-[50px] gap-2.5 cursor-pointer hover:text-cyan-500 transition-colors duration-300">
+              <TbDeviceDesktopAnalytics/> Analytics
             </Link>
 
-            <Link to="/admin/orders" className="w-full flex items-center h-[50px] gap-2.5">
+            <Link to="/admin/orders" className="w-full flex items-center h-[50px] gap-2.5 cursor-pointer hover:text-cyan-500 transition-colors duration-300">
               <LuClipboardList /> Orders
             </Link>
 
-            <Link to="/admin/products" className="w-full flex items-center h-[50px] gap-2.5">
+            <Link to="/admin/products" className="w-full flex items-center h-[50px] gap-2.5 cursor-pointer hover:text-cyan-500 transition-colors duration-300">
               <LuBoxes /> Products
             </Link>
 
-            <Link to="/admin/users" className="w-full flex items-center h-[50px] gap-2.5">
+            <Link to="/admin/users" className="w-full flex items-center h-[50px] gap-2.5 cursor-pointer hover:text-cyan-500 transition-colors duration-300">
               <FiUsers /> Users
             </Link>
 
-            <Link to="/admin/reviews" className="w-full flex items-center h-[50px] gap-2.5">
+            <Link to="/admin/reviews" className="w-full flex items-center h-[50px] gap-2.5 cursor-pointer hover:text-cyan-500 transition-colors duration-300">
               <MdOutlineRateReview /> Reviews
+            </Link>
+            <Link to="/admin/inventory" className="w-full flex items-center h-[50px] gap-2.5 cursor-pointer hover:text-cyan-500 transition-colors duration-300">
+              <MdOutlineInventory /> Inventory Manag
             </Link>
 
           </div>
@@ -101,6 +106,7 @@ export default function AdminPage() {
           <Route path="update-product" element={<AdminUpdateProductPage />} />
           <Route path="users" element={<AdminUsersPage />} />
           <Route path="reviews" element={<AdminReviewsPage />} />
+          <Route path="inventory" element={<InventoryManagementPage />} />
         </Routes>
       </main>
     </div>
